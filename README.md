@@ -14,7 +14,7 @@
 
 > Platelet- and cMono-labeled cells were then taken from the previous labeling that did not include Solo or Souporcell doublets. For each study participant, for each study day the Platelet and cMono counts matrices were subset and a cMono-Platelet doublet was simulated by randomly taking the counts from one Platelet and one cMono and summing them. This would ensure that simulated doublets (SimMPA) would only include counts summed from cells from the same study participant and same study day. Each Platelet in the dataset was only sampled once when summing counts. For each patient-study timepoint there were more cMono than Platelet. Subsequently, the final number of simulated doublets was equal to the number of Platelets in the dataset. This number was similar to the number of annotated MPAs. The final counts for the three cell types were: MPA (n = 3565), Platelet (n = 2843), SimMPA (n = 2843). SimMPAs were assigned barcode labels with a trailing '-dbl' tag. Similarly, metadata entries for these simulated doublets were mapped based on study participant and study day from which the counts were summed. Care was taken to count-normalize and log1p transform the simulated counts whenever comparisons were made to account for the inflated library sizes.
 
-> REF:
+> REF  
 [1] for citing plink: https://zzz.bwh.harvard.edu/plink/cite.shtml  
 [2] see 'How should I cite Picard' here: https://broadinstitute.github.io/picard/faq.html  
 [3] build obtained here: https://genome.ucsc.edu/cgi-bin/hgGateway?db=hg38; this may be useful: https://genome.ucsc.edu/goldenPath/credits.html#human_credits  
