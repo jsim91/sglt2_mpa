@@ -14,20 +14,20 @@
 
 > Platelet- and cMono-labeled cells were then taken from the previous labeling that did not include Solo or Souporcell doublets. For each study participant, for each study day the Platelet and cMono counts matrices were subset and a cMono-Platelet doublet was simulated by randomly taking the counts from one Platelet and one cMono and summing them. This would ensure that simulated doublets (SimMPA) would only include counts summed from cells from the same study participant and same study day. Each Platelet in the dataset was only sampled once when summing counts. For each patient-study timepoint there were more cMono than Platelet. Subsequently, the final number of simulated doublets was equal to the number of Platelets in the dataset. This number was similar to the number of annotated MPAs. The final counts for the three cell types were: MPA (n = 3565), Platelet (n = 2843), SimMPA (n = 2843). SimMPAs were assigned barcode labels with a trailing '-dbl' tag. Similarly, metadata entries for these simulated doublets were mapped based on study participant and study day from which the counts were summed. Care was taken to count-normalize and log1p transform the simulated counts whenever comparisons were made to account for the inflated library sizes.
 
-REF:
-[1] for citing plink: https://zzz.bwh.harvard.edu/plink/cite.shtml
-[2] see 'How should I cite Picard' here: https://broadinstitute.github.io/picard/faq.html
-[3] build obtained here: https://genome.ucsc.edu/cgi-bin/hgGateway?db=hg38; this may be useful: https://genome.ucsc.edu/goldenPath/credits.html#human_credits
-[4] Zheng, G. X. Y. et al. (2017). Massively parallel digital transcriptional profiling of single cells. Nature Communications 8: 1-12, doi:10.1038/ncomms14049
-[5] Alves, E. et al. Underrepresentation of activating KIR gene expression in single‐cell RNA‐seq data is due to KIR gene misassignment. Eur. J. Immunol. 54, e2350590 (2024)
-[6] Souporcell preprint: https://doi.org/10.1101/699637
-[7] Nicholas J. Bernstein, , Nicole L. Fong, Irene Lam, Margaret A. Roy, David G. Hendrickson, and David R. Kelley (2020), Solo: doublet identification in single-cell RNA-Seq via semi-supervised deep learning, Cell Systems.
-[8] see "Reference" section under the README here: https://github.com/scverse/scvi-tools
-[9] obtained through the R function citation(): R Core Team (2023). _R: A Language and Environment for Statistical Computing_. R Foundation for Statistical Computing, Vienna, Austria. <https://www.R-project.org/>.
-[10] for citing Seurat see: https://cran.r-project.org/web/packages/Seurat/citation.html
-[11] scverse tools suite: https://www.nature.com/articles/s41587-023-01733-8
-[12] for citing anndata see doi: 10.21105/joss.04371
-[13] note it's not stated how to cite python and many(most?) suggest you don't since it's so common
-[14] V. A. Traag, L. Waltman, and N. J. van Eck. From louvain to leiden: guaranteeing well-connected communities. Scientific Reports, mar 2019. URL: https://doi.org/10.1038/s41598-019-41695-z
-[15] umap technical source: https://arxiv.org/abs/1802.03426; umap less technical source: https://www.nature.com/articles/s43586-024-00363-x. Either work.
+> REF:
+[1] for citing plink: https://zzz.bwh.harvard.edu/plink/cite.shtml  
+[2] see 'How should I cite Picard' here: https://broadinstitute.github.io/picard/faq.html  
+[3] build obtained here: https://genome.ucsc.edu/cgi-bin/hgGateway?db=hg38; this may be useful: https://genome.ucsc.edu/goldenPath/credits.html#human_credits  
+[4] Zheng, G. X. Y. et al. (2017). Massively parallel digital transcriptional profiling of single cells. Nature Communications 8: 1-12, doi:10.1038/ncomms14049  
+[5] Alves, E. et al. Underrepresentation of activating KIR gene expression in single‐cell RNA‐seq data is due to KIR gene misassignment. Eur. J. Immunol. 54, e2350590 (2024)  
+[6] Souporcell preprint: https://doi.org/10.1101/699637  
+[7] Nicholas J. Bernstein, , Nicole L. Fong, Irene Lam, Margaret A. Roy, David G. Hendrickson, and David R. Kelley (2020), Solo: doublet identification in single-cell RNA-Seq via semi-supervised deep learning, Cell Systems.  
+[8] see "Reference" section under the README here: https://github.com/scverse/scvi-tools  
+[9] obtained through the R function citation(): R Core Team (2023). _R: A Language and Environment for Statistical Computing_. R Foundation for Statistical Computing, Vienna, Austria. <https://www.R-project.org/>.  
+[10] for citing Seurat see: https://cran.r-project.org/web/packages/Seurat/citation.html  
+[11] scverse tools suite: https://www.nature.com/articles/s41587-023-01733-8  
+[12] for citing anndata see doi: 10.21105/joss.04371  
+[13] note it's not stated how to cite python and many(most?) suggest you don't since it's so common  
+[14] V. A. Traag, L. Waltman, and N. J. van Eck. From louvain to leiden: guaranteeing well-connected communities. Scientific Reports, mar 2019. URL: https://doi.org/10.1038/s41598-019-41695-z  
+[15] umap technical source: https://arxiv.org/abs/1802.03426; umap less technical source: https://www.nature.com/articles/s43586-024-00363-x. Either work.  
 [16] demuxafy: https://genomebiology.biomedcentral.com/articles/10.1186/s13059-024-03224-8
