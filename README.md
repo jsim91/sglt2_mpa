@@ -1,6 +1,5 @@
 ### The SGLT2 Inhibitor Empagliflozin Reduces Circulating Monocyte Platelet Aggregates: A Pilot Study
-#### Methods
-<br>
+#### Methods  
 PLINK files were converted to VCF format using the plink[1] command. Lift over to GRCh38 was done with picard[2]. The UCSC GRCh38/hg38 assembly[3] was used as the target reference build. FASTQ files were processed using 10x Genomics Cell Ranger Count v7.1.0 using 10x Genomics Cloud Analysis[4]. A KIR-modified GRCh38 reference[5] was used for read alignment. Souporcell[6] was used for genetic demultiplexing of the Cell Ranger counts and annotation of inter-sample doublets. The Demuxafy[16] Assign_Indiv_by_Geno method was used to calculate the strength of correlation between variants called by genomic sequencing and those called by Souporcell. These variant call correlations were used to map sample IDs to Souporcell genetic clusters and subsequently to each barcode.
 <br>
 <br>
