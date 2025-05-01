@@ -36,4 +36,5 @@ mpa_mast <- seutools::seurat_dge(seurat_object = seu_test_mpa,
                                  gene_set_blacklist = drop_genes)
 difftime(Sys.time(), start_mast, units = "mins")
 
+# PANEL C
 saveRDS(object = mpa_mast[["media"]][["MPA"]][["raw_res"]], file = "/media/WD24/sadie10x/rna/mast/mpa_real_sim/pbmc_mpa_sim_real_no_platelet_genes_deg_6FEB2025.rds")
