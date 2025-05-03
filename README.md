@@ -43,5 +43,5 @@ notes to self: format citations properly<br><br>
 [14] V. A. Traag, L. Waltman, and N. J. van Eck. From louvain to leiden: guaranteeing well-connected communities. Scientific Reports, mar 2019. URL: https://doi.org/10.1038/s41598-019-41695-z  
 [15] umap technical source: https://arxiv.org/abs/1802.03426; umap less technical source: https://www.nature.com/articles/s43586-024-00363-x. Either work.  
 [16] demuxafy: https://genomebiology.biomedcentral.com/articles/10.1186/s13059-024-03224-8
-[17] ray tuning: Liaw, R., Liang, E., Nishihara, R., Moritz, P., Gonzalez, J., & Stoica, I. (2018). Tune: A Research Platform for Distributed Model Selection and Hyperparameter Optimization. arXiv preprint arXiv:1807.05118.
+[17] ray tuning: Liaw, R., Liang, E., Nishihara, R., Moritz, P., Gonzalez, J., & Stoica, I. (2018). Tune: A Research Platform for Distributed Model Selection and Hyperparameter Optimization. arXiv preprint arXiv:1807.05118.  
 [18] MAST: Finak, G., McDavid, A., Yajima, M. et al. MAST: a flexible statistical framework for assessing transcriptional changes and characterizing heterogeneity in single-cell RNA sequencing data. Genome Biol 16, 278 (2015). https://doi.org/10.1186/s13059-015-0844-5
