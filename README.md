@@ -24,7 +24,7 @@ Platelet- and cMono-labeled cells were then taken from the previous labeling tha
 The MAST R package[18] was used for all differential gene expression (DGE) testing. Cellular detection rate, defined as the number of detected genes per cell and a known source of technical variability, was used as a fixed-effect covariate. Sample ID was used as a random-effect variable to counteract assumptions of cell independence and avoid model overfitting. Genes not expressed in at least 10% of cells in either test group were filtered out prior to DGE testing. When testing for differences between aggregate Monocytes and non-aggregate cMonos, Platelet genes were filtered out prior to MAST testing. Platelet genes were identified as genes that were significantly upregulated by Platelets relative to the cMono group in the dataset. This was done to mitigate the influence of Platelet genes expressed by the aggregate Platelets. MAST log fold change (logFC) estimates per gene, obtained using the getLogFC MAST function, were used to rank the genes for gene set enrichment analysis (GSEA).[Mona to verify genes were ranked by logFC] [Mona, please describe GSEA methods here, with relevant citations added below]
 <br>
 <br>
-notes to self: format citations properly<br><br>
+notes to self: format citations properly week of 12 May<br><br>
 
 > REF  
 [1] for citing plink: https://zzz.bwh.harvard.edu/plink/cite.shtml  
