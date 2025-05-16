@@ -54,28 +54,4 @@ __Clinical Study Design__
 #### Flow Cytometry Metabolic Profiling
 <p>Metabolic activity was assessed using the SCENITH assay.24. Cryopreserved PBMCs were thawed, rested overnight in R10 media supplemented with human serum, and treated with puromycin (10 µg/mL, 15 min) in the presence or absence of metabolic inhibitors: oligomycin (1 µM), 2-deoxy-D-glucose (100 mM), etomoxir (40 µM), CB-839 (1 µM), or DGO(2DG+Oligomycin). Samples were stained with an optimized antibody panel (Table S1), acquired on a Cytek Aurora flow cytometer, and analyzed in FlowJo v10. Analysis was performed using manual gating to quantify changes in metabolic dependencies and cell subset frequencies across study days. Only high-quality, live singlet lymphocyte and monocyte populations were included in downstream analyses.</p>
 
-
-
-
-Target	Clone	Fluorochrome	Vendor	Catalog #
-Flow cytometry				
-CD14	63D3	APC Fire 810	BioLegend	367156
-Puromycin	2A4	Alexa Fluor 488	BioLegend	381505
-CD3	UCHT1	Spark Blue 574	BioLegend	300488
-CD16	3G8	PerCP	BioLegend	302030
-CD41a	HIP8	PE	BD Pharmingen	560979
-Zombie Violet	—	Zombie Violet (405nm)	BioLegend	423113
-CD56	HCD56	Pacific Blue	BioLegend	318326
-CD19	HIB19	Brilliant Violet 510	BioLegend	302241
-CD11b	ICRF44	Brilliant Violet 605	BioLegend	301332
-CD62P	AK-4	APC	BD Pharmingen	550888
-				
-Microscopy				
-CD41a	ITGA2B/1036	—	NeoBiotechnologies	3674‑MSM1‑P0
-CD14	SC69-02	—	Thermo Fisher	MA532248
-CD16	MCA617	—	Bio‑Rad	MCA617
-Rabbit IgG (H+L)	—	Alexa Fluor 594	Thermo Fisher	A-11012
-Rat IgG (H+L)	—	Alexa Fluor 488	Thermo Fisher	A-11006
-Mouse IgG (H+L)	—	Alexa Fluor 700	Thermo Fisher	A-21036
-
-
+![methods tables](readme/readme_table.svg)
