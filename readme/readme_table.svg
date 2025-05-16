@@ -2,9 +2,9 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="175.593mm"
-   height="164.795mm"
-   viewBox="0 0 175.59301 164.795"
+   width="176.09299mm"
+   height="165.295mm"
+   viewBox="0 0 176.09299 165.295"
    version="1.1"
    id="svg1"
    xml:space="preserve"
@@ -24,14 +24,14 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      inkscape:zoom="1.6168981"
-     inkscape:cx="531.26415"
-     inkscape:cy="507.45313"
+     inkscape:cx="532.50109"
+     inkscape:cy="508.69007"
      inkscape:window-width="3840"
      inkscape:window-height="2054"
      inkscape:window-x="-11"
      inkscape:window-y="-11"
      inkscape:window-maximized="1"
-     inkscape:current-layer="svg1" /><defs
+     inkscape:current-layer="layer1" /><defs
      id="defs1"><clipPath
        clipPathUnits="userSpaceOnUse"
        id="clipPath2"><path
@@ -20880,7 +20880,14 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-12.573755,-7.5432585)"><g
+     transform="translate(-12.323756,-7.2932592)"><rect
+       style="fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:0.499999;stroke-linejoin:round;stroke-opacity:1"
+       id="rect1"
+       width="175.59299"
+       height="164.795"
+       x="12.573755"
+       y="7.5432587"
+       ry="5.6843419e-14" /><g
        id="g2492"
        transform="matrix(0.26458333,0,0,0.26458333,-929.30212,3.9277375)" /><g
        id="g2509"
