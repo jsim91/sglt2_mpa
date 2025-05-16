@@ -55,3 +55,32 @@ __Clinical Study Design__
 <p>Metabolic activity was assessed using the SCENITH assay.24. Cryopreserved PBMCs were thawed, rested overnight in R10 media supplemented with human serum, and treated with puromycin (10 µg/mL, 15 min) in the presence or absence of metabolic inhibitors: oligomycin (1 µM), 2-deoxy-D-glucose (100 mM), etomoxir (40 µM), CB-839 (1 µM), or DGO(2DG+Oligomycin). Samples were stained with an optimized antibody panel (Table S1), acquired on a Cytek Aurora flow cytometer, and analyzed in FlowJo v10. Analysis was performed using manual gating to quantify changes in metabolic dependencies and cell subset frequencies across study days. Only high-quality, live singlet lymphocyte and monocyte populations were included in downstream analyses.</p>
 
 ![methods tables](readme/readme_table.svg)
+<br>
+<br>
+__Supplemental References__
+1. 	Purcell S, Neale B, Todd‐Brown K, others. PLINK: A tool set for whole‐genome association and population‐based linkage analyses. Am J Hum Genet [Internet]. 2007;81:559–575. Available from: http://pngu.mgh.harvard.edu/purcell/plink/
+2. 	Broad Institute. Picard Toolkit [Internet]. 2019;Available from: https://broadinstitute.github.io/picard/
+3. 	UCSC Genome Browser. Human GRCh38/hg38 Assembly [Internet]. 2025;Available from: https://genome.ucsc.edu/cgi-bin/hgGateway?db=hg38
+4. 	Zheng GXY, Terry JM, Belgrader P, others. Massively parallel digital transcriptional profiling of single cells. Nat Commun. 2017;8:14049. 
+5. 	Alves E, Chopra A, Ram R, Currenti J, Kalams SA, Mallal SA, Phillips EJ, Gaudieri S. Underrepresentation of activating KIR gene expression in single‐cell RNA‐seq data is due to KIR gene misassignment. Eur J Immunol. 2024;54:e2350590. 
+6. 	Heaton H, Talman AM, Knights A, others. Souporcell: Robust clustering of single-cell RNA-seq by genotype and ambient RNA inference without reference genotypes. bioRxiv. 2020;
+7. 	Neavin D, Senabouth A, Arora H, others. Demuxafy: improvement in droplet assignment by integrating multiple single-cell demultiplexing and doublet detection methods. Genome Biol. 2024;25:94. 
+8. 	Bernstein NJ, Fong NL, Lam I, Roy MA, Hendrickson DG, Kelley DR. Solo: Doublet identification in single-cell RNA-Seq via semi-supervised deep learning. Cell Syst. 2020;
+9. 	Gayoso A, Lopez R, Xing G, others. A Python library for probabilistic analysis of single-cell omics data. Nat Biotechnol. 2022;40:163–166. 
+10. R Core Team. R: A Language and Environment for Statistical Computing [Internet]. 2024;Available from: https://www.R-project.org/
+11. Hao Y, Stuart T, Kowalski MH, others. Dictionary learning for integrative, multimodal and scalable single-cell analysis. Nat Biotechnol. 2024;42:293–304. 
+12. Virshup I, Bredikhin D, Heumos L, others. The scverse project provides a computational ecosystem for single-cell omics data analysis. Nat Biotechnol. 2023;41:604–606. 
+13. Virshup I, Rybakov S, Theis FJ, Angerer P, Wolf FA. anndata: Annotated data for omics analysis. J Open Source Softw. 2024;9:4371. 
+14. Liaw R, Liang E, Nishihara R, Moritz P, Gonzalez J, Stoica I. Tune: A Research Platform for Distributed Model Selection and Hyperparameter Optimization. 2018;
+15. Traag VA, Waltman L, van Eck NJ. From Louvain to Leiden: guaranteeing well-connected communities. Sci Rep. 2019;9:5233. 
+16. Healy J, McInnes L. Uniform manifold approximation and projection. Nature Reviews Methods Primers. 2024;4:82. 
+17. Wolf F, Angerer P, Theis F. SCANPY: large-scale single-cell gene expression data analysis. Genome Biol. 2018;19:15. 
+18. Wickham H. ggplot2: Elegant Graphics for Data Analysis [Internet]. Springer-Verlag New York; 2016. Available from: https://ggplot2.tidyverse.org
+19. Finak G, McDavid A, Yajima M, others. MAST: a flexible statistical framework for assessing transcriptional changes and characterizing heterogeneity in single-cell RNA sequencing data. Genome Biol. 2015;16:278. 
+20. Liberzon A, Birger C, Thorvaldsdóttir H, Ghandi M, Mesirov JP, Tamayo P. The Molecular Signatures Database Hallmark Gene Set Collection. Cell Syst. 2015;1:417–425. 
+21. Korotkevich G, Sukhov V, Budin N, Shpak B, Artyomov MN, Sergushichev A. Fast gene set enrichment analysis. 2016;
+22. Mangiola S, Roth-Schulze AJ, Trussart M, Zozaya-Valdés E, Ma M, Gao Z, Rubin AF, Speed TP, Shim H, Papenfuss AT. sccomp: Robust differential composition and variability analysis for single-cell data. Proceedings of the National Academy of Sciences. 2023;120. 
+23. Stephens M. False discovery rates: a new deal. Biostatistics. 2016;kxw041. 
+24. Argüello RJ, Combes AJ, Char R, Gigan J-P, Baaziz AI, Bousiquot E, Camosseto V, Samad B, Tsui J, Yan P, Boissonneau S, Figarella-Branger D, Gatti E, Tabouret E, Krummel MF, Pierre P. SCENITH: A Flow Cytometry-Based Method to Functionally Profile Energy Metabolism with Single-Cell Resolution. Cell Metab. 2020;32:1063-1075.e7. 
+ 
+
