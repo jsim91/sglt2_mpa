@@ -53,7 +53,7 @@ __Clinical Study Design__
 
 #### Flow Cytometry Metabolic Profiling
 <p>Metabolic activity was assessed using the SCENITH assay.24. Cryopreserved PBMCs were thawed, rested overnight in R10 media supplemented with human serum, and treated with puromycin (10 µg/mL, 15 min) in the presence or absence of metabolic inhibitors: oligomycin (1 µM), 2-deoxy-D-glucose (100 mM), etomoxir (40 µM), CB-839 (1 µM), or DGO(2DG+Oligomycin). Samples were stained with an optimized antibody panel (Table S1), acquired on a Cytek Aurora flow cytometer, and analyzed in FlowJo v10. Analysis was performed using manual gating to quantify changes in metabolic dependencies and cell subset frequencies across study days. Only high-quality, live singlet lymphocyte and monocyte populations were included in downstream analyses.</p>
-<br>
+
 ![methods tables](readme/readme_table.svg)
 <br>
 <br>
