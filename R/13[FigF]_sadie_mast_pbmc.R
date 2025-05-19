@@ -1,8 +1,3 @@
-# Mona slack Mon 9 DEC 2024: So I think sticking with SD1-3 for now is great, and for 
-# clusters let's start with the MPA, CD14+ monos, CD16+ monos to start. Tiger likes 
-# the Hallmark gene sets and it was sort of interesting in the past, so we can include 
-# that one. KEGG and Reactome are always good. I don't know much about C7 immunologic 
-# signature gene sets, but sounds like it could be relevant!
 rm(list = ls()); gc()
 
 # library(seutools)
