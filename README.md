@@ -63,7 +63,15 @@
 #### Flow Cytometry Metabolic Profiling<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Metabolic activity was assessed using the SCENITH assay.​<sup>25</sup>​ We used cryopreserved PBMCs from the same individuals analyzed by scRNASeq to perform orthogonal validation of the findings by flow cytometry (6 of 8 individuals had paired baseline and 12-week samples available). Cells were thawed, diluted into warm R10 medium, washed with R10, and rested for 2 hours at 37 °C in R10 supplemented with human serum. After resting, cells were treated with puromycin (10 µg/mL, 15 min) in the presence or absence of metabolic inhibitors oligomycin (1 µM), 2-deoxy-D-glucose (100 mM), or DGO (2DG+Oligomycin). Cells were prepared for immunophenotyping using a 22-color antibody panel (Table 3, Panel-2). A standardized master mix was prepared, and cell suspensions were combined with the antibody mix to achieve a final staining volume of 100 μL. Samples were incubated for 30 minutes at 4°C in the dark, washed with cold PBS, fixed in 2% paraformaldehyde for 20 minutes at 4°C, washed, and resuspended in cold PBS prior to acquisition on the spectral flow cytometer (Cytek Aurora).<br>
 
-
+![Table 1](readme/Table_1.svg)
+<br>
+<br>
+![Table 2](readme/Table_2.svg)
+<br>
+<br>
+![Table 3](readme/Table_3.svg)
+<br>
+<br>
 ![methods tables](readme/readme_table.svg)
 <br>
 <br>
