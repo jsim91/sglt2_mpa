@@ -63,7 +63,11 @@
 #### Flow Cytometry Metabolic Profiling<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Metabolic activity was assessed using the SCENITH assay.​<sup>25</sup>​ We used cryopreserved PBMCs from the same individuals analyzed by scRNASeq to perform orthogonal validation of the findings by flow cytometry (6 of 8 individuals had paired baseline and 12-week samples available). Cells were thawed, diluted into warm R10 medium, washed with R10, and rested for 2 hours at 37 °C in R10 supplemented with human serum. 2-deoxy-D-glucose (100 mM), oligomycin (1 µM), and controls were prepared fresh, and each inhibitor or R10 was added per well, mixed gently, and incubated at 37 °C for 20 min. Cells were then treated with puromycin (10 µg/mL, 20 min). Cells were washed by adding 100µL PBS, centrifuged at 600 × g for 5 min at room temperature, and washed again with 200µL warm PBS under the same conditions. Cells were resuspended in 50µL PBS and stained with a 22-color surface antibody master mix (Table 3, Panel-2) in a final staining volume of 100µL/well. Samples were incubated at room temperature for 20 min protected from light, washed with 100µL PBS, and fixed in 4% paraformaldehyde for 15 min at room temperature. Cells were washed with 0.1% Triton X-100 (Sigma-Aldrich, Cat#T8787), centrifuged at 600 × g for 5 min, permeabilized with 0.5% Triton X-100 15min at room temperature, centrifuged at 600 × g for 5 min, incubated in 50µL blocking solution (1:1 of human serum with 0.1% perm buffer) for 10 min at room temperature, and stained intracellularly with puromycin antibody (Clone/Cat: 2A4; BL: 381506). Intracellular staining was performed for 30 min at room temperature protected from light, followed by two washes with 0.05% Triton X-100. Finally, cells were resuspended in 150µL BioLegend stabilizing fixative. Acquisition performed on the Cytek Aurora spectral flow cytometer after the protocol.
 <br>
-
+<br>
+<br>
+![Table 1](readme/Figure_1.svg)
+<br>
+<br>
 ![Table 1](readme/Table_1.svg)
 <br>
 <br>
