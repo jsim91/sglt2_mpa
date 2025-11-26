@@ -67,6 +67,8 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Metabolic activity was assessed using the SCENITH assay​<sup>24</sup>​. Healthy control cryopreserved PBMCs were thawed, rested overnight in R10 media supplemented with human serum, and treated with puromycin (10 µg/mL, 15 min) in the presence or absence of metabolic inhibitors: oligomycin (1 µM), 2-deoxy-D-glucose (100 mM), etomoxir (40 µM), CB-839 (1 µM), or DGO(2DG+Oligomycin). Samples were stained with an optimized antibody panel (Table 3, Panel-1), acquired on a Cytek Aurora flow cytometer, and analyzed in FlowJo v10. Analysis was performed using manual gating to quantify changes in metabolic dependencies within cell subset. Only live singlet lymphocyte and monocyte populations were included in downstream analyses. <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A second SCENITH assay<sup>24</sup>​ was performed using PBMC samples from six SADIE participants at SD1 and SD3 to assess metabolic changes following empagliflozin treatment. Cells were thawed, diluted into warm R10 medium, washed with R10, and rested for 2 hours at 37 °C in R10 supplemented with human serum. After resting, cells were treated with puromycin (10 µg/mL, 15 min) in the presence or absence of metabolic inhibitors, using the same inhibitor set as the initial SCENITH assay. Because puromycin was in the AF488 channel, CD86 and HLA-DR  were removed from the staining panel to avoid spectral overlap. The remaining markers were used in the 23-color immunophenotyping panel (Table 3, Panel-2). Samples were stained according to the established protocol, acquired on a Cytek Aurora, and analyzed in FlowJo v10 using the same gating strategy.<br>
 
+
+![methods tables](readme/readme_table1.svg)
 ![methods tables](readme/readme_table2.svg)
 <br>
 <br>
