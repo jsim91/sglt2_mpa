@@ -104,7 +104,7 @@ __Supplemental References__
 20. Liberzon A, Birger C, Thorvaldsdóttir H, Ghandi M, Mesirov JP, Tamayo P. The Molecular Signatures Database Hallmark Gene Set Collection. Cell Syst. 2015;1:417–425. 
 21. Korotkevich G, Sukhov V, Budin N, Shpak B, Artyomov MN, Sergushichev A. Fast gene set enrichment analysis. 2016;
 22. Mangiola S, Roth-Schulze AJ, Trussart M, Zozaya-Valdés E, Ma M, Gao Z, Rubin AF, Speed TP, Shim H, Papenfuss AT. sccomp: Robust differential composition and variability analysis for single-cell data. Proceedings of the National Academy of Sciences. 2023;120.
-23. Stephens M. False discovery rates: a new deal. Biostatistics. 2016;kxw041.
+23. Stephens M. False discovery rates: a new deal. Biostatistics. 2017;18(2):275-294.
 24. Mashayekhi M, Beckman JA, Nian H, et al. Comparative effects of weight loss and incretin-based therapies on vascular endothelial function, fibrinolysis and inflammation in individuals with obesity and prediabetes: a randomized controlled trial. Diabetes Obes Metab. 2023;25(2):570-580.
 25. Argüello RJ, Combes AJ, Char R, Gigan J-P, Baaziz AI, Bousiquot E, Camosseto V, Samad B, Tsui J, Yan P, Boissonneau S, Figarella-Branger D, Gatti E, Tabouret E, Krummel MF, Pierre P. SCENITH: A Flow Cytometry-Based Method to Functionally Profile Energy Metabolism with Single-Cell Resolution. Cell Metab. 2020;32:1063-1075.e7. 
  
