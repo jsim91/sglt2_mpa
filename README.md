@@ -3,8 +3,11 @@
 
 #### Clinical Study Design<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The objective of this pilot study was to evaluate the immune effects of empagliflozin in humans, including in blood.<br>
+
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sixteen women age 18–70 years old with obesity (BMI ≥ 30 kg/m²) and pre‑diabetes were enrolled and were treated with empagliflozin 25 mg/day (Boehringer Ingelheim) in an open‑label, single‑arm design. Pre-diabetes was defined using the American Diabetes Association criteria as either impaired fasting glucose between 100-125 mg/dL, impaired glucose tolerance after a 75-gram glucose challenge of 140-199 mg/dL, or hemoglobin A1c 5.7-6.4%. Pregnancy was excluded in women of child-bearing potential by urine β-human chorionic gonadotropin. Individuals with type 1 or type 2 diabetes, significant cardiovascular, neurologic, hematologic, immunologic, liver or renal disease, history of pancreatitis, recurrent vulvovaginitis, urinary tract infections, Fournier’s gangrene, and treatment with chronic systemic steroids or loop diuretics were excluded.<br>
+
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The protocol was approved by the Vanderbilt University Medical Center Institutional Review Board (IRB# 210907), conducted in accordance with the Declaration of Helsinki, and registered at ClinicalTrials.gov (NCT04907214). All participants provided written informed consent.<br>
+
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;All study procedures were conducted at the Vanderbilt Clinical Research Center (Nashville, TN). Potentially eligible participants were identified using an IRB-approved electronic health record screening tool, contacted via IRB-approved chart messaging, phone calls, or emails. Screening began August 2021 and all study procedures were completed by December 2023.<br>
 
 #### Study Day Procedures<br>
