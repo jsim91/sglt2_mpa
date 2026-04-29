@@ -6,7 +6,7 @@ This document describes the canonical execution sequence for scripts in `primary
 
 - Workflow entrypoint: run `primary_script/1_score_solo_singlets.ipynb` first.
 - That notebook begins the active pipeline by generating per-lane SOLO outputs consumed by later scripts.
-- Typical first-pass run order is: `1` -> `2` -> `3` -> `4` -> `5` -> `6` -> `7` -> `8` -> `9_13` (step 9 pass) -> `10` -> `11` -> `12` -> `15` -> `9_13` (step 13 pass) -> `14`.
+- Typical first-pass run order is: `1` -> `2` -> `3` -> `4` -> `5` -> `6` -> `7` -> `8` -> `9_13` (step 9 pass) -> `10` -> `11` -> `12` -> `9_13` (step 13 pass) -> `14` -> `15`.
 - Caveat: `9_13[FigA]_test_mast.R` is a combined script that supports two logical checkpoints in the run sequence (step 9 and step 13), so treat it as a re-entry script rather than a one-time step.
 
 ## Required H5 Dependency
