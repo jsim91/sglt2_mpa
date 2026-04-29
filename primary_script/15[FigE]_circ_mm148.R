@@ -19,81 +19,44 @@ library(trelliscopejs)
 library(stringr)
 
 # Load data ----
-# Load the most recent data (output from script 12)
-mm148_pbmc_all <- read_csv(here::here("intermediate/pbmc/anndata_elements/mm_pbmc_named_cluster_cell_counts.csv"))
+# Load myeloid cell counts by type and sample (output from script 12)
+mm148_myeloid_counts <- read_csv(here::here("intermediate/pbmc/anndata_elements/mm_myeloid_named_cluster_cell_counts.csv"))
 
 # Dataframe setup ----
 
-# Pull out ID from pt_day_id column
-df_pbmc_all <- mm148_pbmc_all %>%
-  mutate(subject_id = str_to_lower(str_remove_all(
-    str_extract(pt_day_id, "(Sadie-\\d{3})"), "-")),
-    study_day = str_to_lower(str_extract(pt_day_id, "SD\\d"))) %>%
-  select(-pt_day_id) %>%
+# Read myeloid counts (first column contains subject_id_study_day identifiers from Script 12)
+mm148_myeloid_raw <- read_csv(here::here("intermediate/pbmc/anndata_elements/mm_myeloid_named_cluster_cell_counts.csv"))
+col_rename <- colnames(mm148_myeloid_raw)[1]
+
+# Extract subject ID and study day from first column (format: subject_id_study_day)
+df_myeloid_all <- mm148_myeloid_raw %>%
+  rename(pt_day_id = !!col_rename) %>%
+  separate(pt_day_id, into = c("subject_id", "study_day"), sep = "_", remove = TRUE) %>%
   select(subject_id, study_day, everything())
 
-# Pull column names
-col_names_pbmc <- colnames(df_pbmc_all)
-col_names_pbmc <- col_names_pbmc[!col_names_pbmc %in% c("subject_id", "study_day" )]
+# Pull column names (myeloid cell types)
+col_names_myeloid <- colnames(df_myeloid_all)
+col_names_myeloid <- col_names_myeloid[!col_names_myeloid %in% c("subject_id", "study_day")]
 
-# Modify study days
-df_pbmc_all <- df_pbmc_all %>%
+# Standardize study day factor levels
+df_myeloid_all <- df_myeloid_all %>%
   mutate(
-    study_day = case_when(
-      study_day %in%
-        c("sd1") ~
-        factor("Baseline", levels =
-                 c("Baseline", "2-Weeks",
-                   "12-Weeks")),
-      study_day %in%
-        c("sd2") ~
-        factor("2-Weeks", levels =
-                 c("Baseline", "2-Weeks",
-                   "12-Weeks")),
-      study_day %in%
-        c("sd3") ~
-        factor("12-Weeks", levels =
-                 c("Baseline", "2-Weeks",
-                   "12-Weeks"))))
+    study_day = factor(study_day,
+                       levels = c("Baseline", "2-Weeks", "12-Weeks")))
 
-# Make long DF
-df_pbmc_all_long <- df_pbmc_all %>%
-  pivot_longer(cols = col_names_pbmc,
+# Pivot to long format
+df_myeloid_all_long <- df_myeloid_all %>%
+  pivot_longer(cols = all_of(col_names_myeloid),
                names_to = "cluster",
                values_to = "value")
 
-# Make it frequency of subset of cells
-
-# Define subsets based on cell type groupings
-b_cell_clusters <- c('B-platelet', 'Bint', 'Bmem', 'Bnaive', 'Plasmablast')
-t_nk_cell_clusters <- c('CD16 NK', 'CD8mem', 'NKT', 'Treg', 'Prolif NK', 'T-platelet', 'dnT', 'gdT/MAIT', 'CD4mem', 'CD4naive', 'CD56-bright NK', 'CD8naive', 'B-NK')
-myeloid_cell_clusters <- c('CD14 Mono', 'CD16 Mono', 'pDC', 'M-platelet', 'cDC1', 'cDC2')
-
-# Define second set of subsets to include platelets with myeloid
-myeloid_cell_w_plt_cluster <- c(myeloid_cell_clusters, 'Platelet')
-
-# Assign a subset label to each cluster
-df_pbmc_all_long <- df_pbmc_all_long %>%
-  mutate(
-    subset = case_when(
-      cluster %in% b_cell_clusters ~ "B cells",
-      cluster %in% t_nk_cell_clusters ~ "T/NK cells",
-      cluster %in% myeloid_cell_clusters ~ "Myeloid cells",
-      TRUE ~ "Other"  # Default case for unexpected clusters
-    ),
-    subset_2 = case_when(
-      cluster %in% myeloid_cell_w_plt_cluster ~ "Myeloid w plt",
-      TRUE ~ "Other"  # Default case for unexpected clusters
-    )
-  )
-
-# Calculate subset totals and frequencies
-df_pbmc_subset1_long <- df_pbmc_all_long %>%
-  group_by(subject_id, study_day, subset) %>%
-  mutate(subset_total = sum(value, na.rm = TRUE)) %>%
-  mutate(frequency = (value / subset_total) *100) %>%
+# Calculate frequencies across all myeloid cells per sample
+df_myeloid_freq_long <- df_myeloid_all_long %>%
+  group_by(subject_id, study_day) %>%
+  mutate(total_myeloid = sum(value, na.rm = TRUE)) %>%
+  mutate(frequency = (value / total_myeloid) * 100) %>%
   ungroup() %>%
-  select(-subset_total, -subset, -value, -subset_2) %>%   # Remove intermediate totals if not needed
+  select(subject_id, study_day, cluster, frequency) %>%
   rename(value = frequency)
 
 # Set theme and graphics ----
@@ -159,7 +122,7 @@ plot_violin <- function(df, x_label = NULL, y_label = NULL, pd = 0.12, ...) {
 
 # Figure 1: MPA cell frequency
 pl_violin_mpa <- plot_violin(
-  df_pbmc_subset1_long %>%
+  df_myeloid_freq_long %>%
     rename(study_id = subject_id) %>%
     filter(cluster == "M-platelet"),
   variable_name = "cluster",
@@ -169,7 +132,7 @@ print(pl_violin_mpa)
 
 # Figure 2: cMono cell frequency
 pl_violin_cmono <- plot_violin(
-  df_pbmc_subset1_long %>%
+  df_myeloid_freq_long %>%
     rename(study_id = subject_id) %>%
     filter(cluster == "CD14 Mono"),
   variable_name = "cluster",
