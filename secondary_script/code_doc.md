@@ -7,7 +7,7 @@ This document describes the canonical execution sequence for scripts in `primary
 - Workflow entrypoint: run `primary_script/1_score_solo_singlets.ipynb` first.
 - That notebook begins the active pipeline by generating per-lane SOLO outputs consumed by later scripts.
 - Typical first-pass run order is: `1` -> `2` -> `3` -> `4` -> `5` -> `6` -> `7` -> `8` -> `9_13` (step 9 pass) -> `10` -> `11` -> `12` -> `9_13` (step 13 pass) -> `14`.
-- Caveat: `9_13[FigA_G_F]_test_mast.R` is a combined script that supports two logical checkpoints in the run sequence (step 9 and step 13), so treat it as a re-entry script rather than a one-time step.
+- Caveat: `9_13[FigA]_test_mast.R` is a combined script that supports two logical checkpoints in the run sequence (step 9 and step 13), so treat it as a re-entry script rather than a one-time step.
 
 ## Required H5 Dependency
 
@@ -24,7 +24,7 @@ This document describes the canonical execution sequence for scripts in `primary
 
 - This document covers only files in `primary_script`.
 - Numeric prefixes indicate intended run order.
-- `9_13[FigA_G_F]_test_mast.R` combines steps 9 and 13.
+- `9_13[FigA]_test_mast.R` combines steps 9 and 13.
 - Bracket tags (for example `[FigB]`) indicate manuscript figure linkage.
 - Paths are relative to repository root (resolved by `REPO_ROOT` in notebooks and `here::here(...)` in R scripts).
 
@@ -188,7 +188,7 @@ This document describes the canonical execution sequence for scripts in `primary
 	- SimMPA cells are tagged via barcode suffix logic.
 	- Outputs are consumed by scripts 9_13 and 11.
 
-### 9_13[FigA_G_F]_test_mast.R (Steps 9 and 13; Figure A, G, F)
+### 9_13[FigA]_test_mast.R (Steps 9 and 13; Figure A)
 
 - Role / Purpose:
 	- Runs MAST DGE workflows for key PBMC/myeloid contrasts, creates panel-relevant visualizations, and writes intermediate MAST products.
@@ -227,7 +227,7 @@ This document describes the canonical execution sequence for scripts in `primary
 - Other Relevant Context:
 	- This script is figure-focused and typically run after core object generation is complete.
 
-### 11[FigC]_test_mast_real_vs_sim.R (Figure C)
+### 11_test_mast_real_vs_sim.R (Upstream Input For Script 14)
 
 - Role / Purpose:
 	- Performs MAST DGE for real MPA versus simulated MPA and applies platelet-gene blacklist filtering.
