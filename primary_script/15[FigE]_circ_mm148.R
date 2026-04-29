@@ -19,18 +19,17 @@ library(trelliscopejs)
 library(stringr)
 
 # Load data ----
-# Load myeloid cell counts by type and sample (output from script 12)
-mm148_myeloid_counts <- read_csv(here::here("intermediate/pbmc/anndata_elements/mm_myeloid_named_cluster_cell_counts.csv"))
+# Read myeloid cell counts by type and sample (output from script 12)
+# First column contains subject_id_study_day row identifiers from Script 12's write.csv()
+mm148_myeloid_raw <- read_csv(here::here("intermediate/pbmc/anndata_elements/mm_myeloid_named_cluster_cell_counts.csv"))
 
 # Dataframe setup ----
 
-# Read myeloid counts (first column contains subject_id_study_day identifiers from Script 12)
-mm148_myeloid_raw <- read_csv(here::here("intermediate/pbmc/anndata_elements/mm_myeloid_named_cluster_cell_counts.csv"))
-col_rename <- colnames(mm148_myeloid_raw)[1]
-
 # Extract subject ID and study day from first column (format: subject_id_study_day)
+# Use column position to avoid assumptions about column naming
+col_1_name <- colnames(mm148_myeloid_raw)[1]
 df_myeloid_all <- mm148_myeloid_raw %>%
-  rename(pt_day_id = !!col_rename) %>%
+  rename(pt_day_id = all_of(col_1_name)) %>%
   separate(pt_day_id, into = c("subject_id", "study_day"), sep = "_", remove = TRUE) %>%
   select(subject_id, study_day, everything())
 
