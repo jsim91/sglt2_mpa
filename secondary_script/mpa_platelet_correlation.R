@@ -6,7 +6,7 @@ library(pspearman)
 
 inpath <- 'D:/10x/sadie/MPA_pilot/reports'
 
-correlate_celltype <- 'CD14 Mono' # CD14 Mono, CD16 Mono, Platelet
+correlate_celltype <- 'Platelet' # CD14 Mono, Platelet
 
 counts_df <- read.csv(file = file.path(inpath, 'mm_pbmc_named_cluster_cell_counts.csv'), check.names = FALSE)
 pid_coln <- if('pt_day_id' %in% colnames(counts_df)) 'pt_day_id' else colnames(counts_df)[1]
@@ -37,3 +37,9 @@ print(paste0('SD1: pvalue = ',sd1_corr$p.value,', rho = ',sd1_corr$estimate))
 print(paste0('SD2: pvalue = ',sd2_corr$p.value,', rho = ',sd2_corr$estimate))
 print(paste0('SD3: pvalue = ',sd3_corr$p.value,', rho = ',sd3_corr$estimate))
 print(paste0('all SD: pvalue = ',sdn_corr$p.value,', rho = ',sdn_corr$estimate))
+
+# Platelet result:
+# "SD1: pvalue = 0.664583333333333, rho = 0.19047619047619"
+# "SD2: pvalue = 0.299206349206349, rho = 0.428571428571429"
+# "SD3: pvalue = 0.582142857142857, rho = 0.238095238095238"
+# "all SD: pvalue = 0.119103019512185, rho = 0.32695652173913"
