@@ -28,17 +28,6 @@ seu <- readRDS(file = here::here("intermediate/pbmc/anndata_elements/pbmc_seurat
 
 seu <- AddMetaData(object = seu, metadata = paste0(seu$study_id,"_",seu$study_day), col.name = "full_id")
 uid <- unique(seu$full_id); uid <- uid[order(uid)]
-uclus <- unique(seu$subset_cluster); uclus <- uclus[order(uclus)]
-
-fmat <- matrix(data = NA, nrow = length(uid), ncol = length(uclus))
-row.names(fmat) <- uid; colnames(fmat) <- uclus
-for(i in 1:nrow(fmat)) {
-  clnums <- seu$subset_cluster[seu$full_id==row.names(fmat)[i]]
-  for(j in 1:ncol(fmat)) {
-    fmat[i,j] <- sum(clnums==colnames(fmat)[j])
-  }
-}
-write.csv(x = fmat, file = here::here("intermediate/pbmc/anndata_elements/mm_pbmc_subset_cluster_cell_counts.csv"))
 
 uct <- unique(seu$cell_type); uct <- uct[order(uct)]
 fmat2 <- matrix(data = NA, nrow = length(uid), ncol = length(uct))
@@ -50,5 +39,3 @@ for(i in 1:nrow(fmat2)) {
   }
 }
 write.csv(x = fmat2, file = here::here("intermediate/pbmc/anndata_elements/mm_pbmc_named_cluster_cell_counts.csv"))
-
-
