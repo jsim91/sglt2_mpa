@@ -1,14 +1,36 @@
 #!/bin/bash
 
-for LANE in {2..5}
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+
+BARCODE_SCRIPT="${REPO_ROOT}/secondary_script/retrieve_barcodes.R"
+CELLRANGER_ROOT="${REPO_ROOT}/primary_dependents/cellranger_h5"
+SOUPORCELL_OUT_ROOT="${REPO_ROOT}/primary_dependents/souporcell"
+
+# Override with env vars if your .sif and reference fasta are elsewhere.
+SINGULARITY_BIN="${SINGULARITY_BIN:-singularity}"
+SOUPORCELL_SIF="${SOUPORCELL_SIF:-${REPO_ROOT}/primary_dependents/souporcell_latest.sif}"
+REFERENCE_FASTA="${REFERENCE_FASTA:-${REPO_ROOT}/primary_dependents/hg38.fa}"
+
+for LANE in {1..8}
 do
-    echo $LANE
+    echo "Processing lane ${LANE}"
 
-    Rscript /media/MPEdge16/MM137/sc/pre_scripts/retrieve_barcodes.R cd "/media/MPEdge16/MM137/sc/10x_cloud_dl/10872-MM-${LANE}_standard/"
-    
-    cd /media/MPEdge16/MM137/sc/
+    LANE_DIR="${CELLRANGER_ROOT}/10872-MM-${LANE}"
+    OUT_DIR="${SOUPORCELL_OUT_ROOT}/10872-MM-${LANE}_soc"
 
-    nohup /media/MPEdge16/MM137/sc/singularity exec -B "/media/MPEdge16/MM137/sc/10x_cloud_dl/10872-MM-${LANE}_standard" /media/MPEdge16/MM137/sc/souporcell_latest.sif souporcell_pipeline.py -i "/media/MPEdge16/MM137/sc/10x_cloud_dl/10872-MM-${LANE}_standard/possorted_genome_bam.bam" -b "/media/MPEdge16/MM137/sc/10x_cloud_dl/10872-MM-${LANE}_standard/barcodes_R.tsv" -f /media/MPEdge16/MM137/sc/10x_cloud_dl/hg38.fa -t 40 -o "/media/MPEdge16/MM137/sc/souporcell_outs/10872-MM-${LANE}_soc" -k 3 &
+    Rscript "${BARCODE_SCRIPT}" "${LANE_DIR}"
+
+    nohup "${SINGULARITY_BIN}" exec -B "${LANE_DIR}" "${SOUPORCELL_SIF}" \
+        souporcell_pipeline.py \
+        -i "${LANE_DIR}/possorted_genome_bam.bam" \
+        -b "${LANE_DIR}/barcodes_R.tsv" \
+        -f "${REFERENCE_FASTA}" \
+        -t 40 \
+        -o "${OUT_DIR}" \
+        -k 3 &
 done
 
 exit 0

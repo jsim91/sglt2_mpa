@@ -1,3 +1,5 @@
+Pipeline script documentation: [secondary_script/code_doc.md](secondary_script/code_doc.md)
+
 #### Data Availability Statement<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The authors will make data, analytic methods, and study materials available to other researchers upon reasonable request.<br>
 

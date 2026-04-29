@@ -47,3 +47,15 @@ po/*~
 
 # RStudio Connect folder
 rsconnect/
+
+# Pipeline placeholders: track directory tree, ignore generated contents
+intermediate/**
+!intermediate/**/
+!intermediate/**/.gitkeep
+
+output/**
+!output/**/
+!output/**/.gitkeep
+
+# Keep required external inputs versioned
+!primary_dependents/

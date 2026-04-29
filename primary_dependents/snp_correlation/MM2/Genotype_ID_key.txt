@@ -1,0 +1,17 @@
+Genotype_ID	Cluster_ID	Correlation
+Sadie-004_VK-10796_Plate-14_MM-10873_Plate01_A06_Sadie-004_VK-10796_Plate-14	unassigned	NA
+Sadie-005_VK-10796_Plate-14_MM-10873_Plate01_B06_Sadie-005_VK-10796_Plate-14	unassigned	NA
+Sadie-006_VK-10796_Plate-14_MM-10873_Plate01_C06_Sadie-006_VK-10796_Plate-14	unassigned	NA
+Sadie-011_VK-10796_Plate-14_MM-10873_Plate01_D06_Sadie-011_VK-10796_Plate-14	1	0.8372059619581671
+Sadie-013_VK-10796_Plate-14_MM-10873_Plate01_E06_Sadie-013_VK-10796_Plate-14	unassigned	NA
+Sadie-016_VK-10796_Plate-14_MM-10873_Plate01_F06_Sadie-016_VK-10796_Plate-14	unassigned	NA
+Sadie-018_VK-10796_Plate-14_MM-10873_Plate01_G06_Sadie-018_VK-10796_Plate-14	unassigned	NA
+Sadie-023_VK-10796_Plate-14_MM-10873_Plate01_H06_Sadie-023_VK-10796_Plate-14	unassigned	NA
+Sadie-026_VK-10796_Plate-14_MM-10873_Plate01_A07_Sadie-026_VK-10796_Plate-14	unassigned	NA
+Sadie-028_VK-10796_Plate-14_MM-10873_Plate01_B07_Sadie-028_VK-10796_Plate-14	unassigned	NA
+Sadie-029_VK-10796_Plate-14_MM-10873_Plate01_C07_Sadie-029_VK-10796_Plate-14	unassigned	NA
+Sadie-033_VK-10796_Plate-14_MM-10873_Plate01_D07_Sadie-033_VK-10796_Plate-14	unassigned	NA
+Sadie-034_VK-10796_Plate-14_MM-10873_Plate01_E07_Sadie-034_VK-10796_Plate-14	unassigned	NA
+Sadie-036_VK-10796_Plate-14_MM-10873_Plate01_F07_Sadie-036_VK-10796_Plate-14	2	0.8591527194080014
+Sadie-037_VK-10796_Plate-14_MM-10873_Plate01_G07_Sadie-037_VK-10796_Plate-14	unassigned	NA
+Sadie-038_VK-10796_Plate-14_MM-10873_Plate01_H07_Sadie-038_VK-10796_Plate-14	0	0.8418463991099875
