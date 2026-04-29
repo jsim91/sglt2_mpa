@@ -5,10 +5,11 @@ source(here::here("primary_dependents/seurat_dge_local.R"))
 library(Seurat)
 library(SeuratWrappers)
 library(Matrix)
+library(ggplot2)
 dir.create(here::here("intermediate/mast/pbmc_mpa_mono_sd"), showWarnings = FALSE, recursive = TRUE)
 dir.create(here::here("output/figures"), showWarnings = FALSE, recursive = TRUE)
 
-if(F) {
+if(F) { # create seurat object from anndata elements once
   ct <- Matrix::t(Matrix::readMM(file = here::here("intermediate/pbmc/anndata_elements/adata_pbmc_counts.mtx")))
   obs <- read.csv(file = here::here("intermediate/pbmc/anndata_elements/adata_pbmc_obs.csv"))
   var <- read.csv(file = here::here("intermediate/pbmc/anndata_elements/adata_pbmc_var.csv"))
@@ -32,16 +33,15 @@ if(F) {
   
   Seurat::Idents(seu) <- seu$cell_type
   saveRDS(object = seu, file = here::here("intermediate/seurat/MM148_pbmc_seurat.rds"))
-} else {
+} else { # then read in the seurat object on re-run
   seu <- readRDS(file = here::here("intermediate/seurat/MM148_pbmc_seurat.rds"))
+  # format names
   seu$cell_type <- ifelse(seu$cell_type=="M-platelet", "MPA", seu$cell_type)
   seu$cell_type <- ifelse(seu$cell_type=="CD14 Mono", "cMono", seu$cell_type)
   seu$cell_type <- ifelse(seu$cell_type=="CD16 Mono", "nMono", seu$cell_type)
 }
 
 if(T) { # myeloid singlet umap
-  library(ggplot2)
-  
   myeloid_obs <- read.csv(file = here::here("intermediate/pbmc/anndata_elements/adata_pbmc_myeloid_obs.csv"), check.names = FALSE)
   myeloid_umap <- read.csv(file = here::here("intermediate/pbmc/anndata_elements/adata_pbmc_myeloid_umap_coordinates.csv"), check.names = FALSE, header = FALSE)
   colnames(myeloid_umap) <- c("UMAP1","UMAP2")
@@ -86,8 +86,6 @@ if(T) { # myeloid singlet umap
 }
 
 if(T) { # myeloid doublet umap
-  library(ggplot2)
-  
   myeloid_obs <- read.csv(file = here::here("intermediate/pbmc_myeloid_platelet_int_dbl_obs_to_r.csv"), check.names = FALSE)
   myeloid_umap <- read.csv(file = here::here("intermediate/pbmc_myeloid_platelet_int_dbl_umap_coordinates_to_r.csv"), check.names = FALSE, header = FALSE)
   colnames(myeloid_umap) <- c("UMAP1","UMAP2")
@@ -132,25 +130,27 @@ if(T) { # myeloid doublet umap
 }
 
 if(T) { # myeloid sim, mpa
-  library(ggplot2)
-  
   myeloid_obs <- read.csv(file = here::here("intermediate/pbmc/anndata_elements/adata_pbmc_obs_mpa_sim.csv"), check.names = FALSE)
   myeloid_umap <- read.csv(file = here::here("intermediate/pbmc/anndata_elements/pbmc_mpa_sim_umap_coordinates.csv"), 
                            check.names = FALSE, header = FALSE, row.names = NULL)
   colnames(myeloid_umap) <- c("UMAP1","UMAP2")
   myeloid_umap$barcode <- myeloid_obs$barcode_2
-
-  myeloid_obs$cell_type <- ifelse(myeloid_obs$cell_type=="M-platelet", "MPA", myeloid_obs$cell_type)
-  myeloid_obs$cell_type <- ifelse(myeloid_obs$cell_type=="CD14 Mono", "cMono", myeloid_obs$cell_type)
-  myeloid_obs$cell_type <- ifelse(myeloid_obs$cell_type=="CD16 Mono", "nMono", myeloid_obs$cell_type)
-  myeloid_map <- myeloid_obs$cell_type; names(myeloid_map) <- myeloid_obs$barcode_2
+  
+  myeloid_mapping <- read.csv(file = '/media/MPEdge16/MM137/sc/py/py_out/pbmc/anndata_elements/adata_pbmc_obs_mpa_sim_2.csv')
+  myeloid_mapping$sim_cell_type <- ifelse(myeloid_mapping$sim_cell_type=="M-platelet", "MPA", myeloid_mapping$sim_cell_type)
+  myeloid_mapping$sim_cell_type <- ifelse(myeloid_mapping$sim_cell_type=="CD14 Mono", "cMono", myeloid_mapping$sim_cell_type)
+  myeloid_mapping$sim_cell_type <- ifelse(myeloid_mapping$sim_cell_type=="CD16 Mono", "nMono", myeloid_mapping$sim_cell_type)
+  myeloid_map <- myeloid_mapping$sim_cell_type; names(myeloid_map) <- myeloid_mapping$barcode_2
+  
   myeloid_umap$cluster <- myeloid_map[myeloid_umap$barcode]
   myeloid_umap$cluster[grep(pattern = "\\-dbl$", x = myeloid_umap$barcode)] <- "SimMPA"
   myeloid_umap$cluster <- factor(myeloid_umap$cluster)
   
-  uclus <- unique(myeloid_umap$cluster)
+  myl_front <- myeloid_umap
+  
+  uclus <- unique(myl_front$cluster)
 
-  set.seed(123); myl_front <- myeloid_umap[sample(1:nrow(myeloid_umap),nrow(myeloid_umap),replace=F),]
+  set.seed(123); myl_front <- myl_front[sample(1:nrow(myl_front),nrow(myl_front),replace=F),]
 
   clusx <- rep(NA, length=length(uclus)); names(clusx) <- uclus; clusy <- clusx
 
@@ -169,6 +169,7 @@ if(T) { # myeloid sim, mpa
                   'Platelet' = '#66FFFF', 
                   'doublet' = '#A9A9A9',
                   'SimMPA' = '#d50000')
+  
   myl_umap <- ggplot() + 
     ggrastr::geom_point_rast(data = myl_front, aes(x = UMAP1, y = UMAP2, color = cluster, fill = cluster), alpha = 0.4) +
     annotate("text", x = anno_df$xval, y = anno_df$yval, label = anno_df$lab,
@@ -177,6 +178,7 @@ if(T) { # myeloid sim, mpa
     scale_fill_manual(values = custom_col) + 
     theme_bw() + 
     theme(legend.text = element_text(size = 18, face = 'bold'), 
+          # legend.position = "bottom", 
           legend.position = 'none', 
           legend.title = element_blank(), 
           axis.text = element_blank(), 
