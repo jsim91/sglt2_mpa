@@ -4,7 +4,7 @@ rm(list = ls()); gc()
 # install.packages('pspearman')
 library(pspearman)
 
-inpath <- 'D:/10x/sadie/MPA_pilot/reports'
+inpath <- 'path/to/counts'
 
 correlate_celltype <- 'Platelet' # CD14 Mono, Platelet
 
