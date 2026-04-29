@@ -1,6 +1,5 @@
 rm(list = ls()); gc()
 
-# library(seutools)
 library(here)
 source(here::here("primary_dependents/seurat_dge_local.R"))
 library(Seurat)
@@ -42,8 +41,6 @@ if(F) {
 
 if(T) { # myeloid singlet umap
   library(ggplot2)
-  library(ggrepel)
-  library(shadowtext)
   
   myeloid_obs <- read.csv(file = here::here("intermediate/pbmc/anndata_elements/adata_pbmc_myeloid_obs.csv"), check.names = FALSE)
   myeloid_umap <- read.csv(file = here::here("intermediate/pbmc/anndata_elements/adata_pbmc_myeloid_umap_coordinates.csv"), check.names = FALSE, header = FALSE)
@@ -65,11 +62,6 @@ if(T) { # myeloid singlet umap
   }
   anno_df <- data.frame(xval = clusx, yval = clusy, lab = names(clusx)); anno_df$lab <- factor(anno_df$lab)
   
-  # gg_color_hue <- function(n) {
-  #   hues = seq(15, 375, length = n + 1)
-  #   hcl(h = hues, l = 65, c = 100)[1:n]
-  # }
-  # custom_col <- gg_color_hue(6); names(custom_col) <- uclus
   custom_col <- c('cMono' = '#FFB266', 
                   'nMono' = '#FF6666', 
                   'MPA' = '#66FF66', 
@@ -81,13 +73,9 @@ if(T) { # myeloid singlet umap
   
   myl_umap <- ggplot() + 
     ggrastr::geom_point_rast(data = myeloid_umap, aes(x = UMAP1, y = UMAP2, color = cluster), alpha = 0.7) +
-    # geom_point(data = myeloid_umap, aes(x = UMAP1, y = UMAP2, fill = cluster), alpha = 0.9, pch = 21, color = "black", stroke = 0.1) + 
-    # shadowtext::geom_shadowtext(data = anno_df, aes(x = xval, y = yval, label = lab, color = lab), 
-    #                             size = 8, bg.color = "black", bg.r = 0.1) + 
     annotate("text", x = anno_df$xval, y = anno_df$yval, label = anno_df$lab,
              hjust = 0.5, color = "black", fontface = "bold", size = 9) + 
     scale_color_manual(values = custom_col) +
-    # scale_fill_manual(values = custom_col) +
     theme_bw() + 
     theme(legend.position = "none", 
           axis.text = element_blank(), 
@@ -99,8 +87,6 @@ if(T) { # myeloid singlet umap
 
 if(T) { # myeloid doublet umap
   library(ggplot2)
-  library(ggrepel)
-  library(shadowtext)
   
   myeloid_obs <- read.csv(file = here::here("intermediate/pbmc_myeloid_platelet_int_dbl_obs_to_r.csv"), check.names = FALSE)
   myeloid_umap <- read.csv(file = here::here("intermediate/pbmc_myeloid_platelet_int_dbl_umap_coordinates_to_r.csv"), check.names = FALSE, header = FALSE)
@@ -133,13 +119,9 @@ if(T) { # myeloid doublet umap
   
   myl_umap <- ggplot() + 
     ggrastr::geom_point_rast(data = myeloid_umap, aes(x = UMAP1, y = UMAP2, color = cluster), alpha = 0.7) +
-    # geom_point(data = myeloid_umap, aes(x = UMAP1, y = UMAP2, fill = cluster), alpha = 0.9, pch = 21, color = "black", stroke = 0.1) + 
-    # shadowtext::geom_shadowtext(data = anno_df, aes(x = xval, y = yval, label = lab, color = lab), 
-    #                             size = 8, bg.color = "black", bg.r = 0.1) + 
     annotate("text", x = anno_df$xval, y = anno_df$yval, label = anno_df$lab,
              hjust = 0.5, color = "black", fontface = "bold", size = 9) + 
     scale_color_manual(values = custom_col) +
-    # scale_fill_manual(values = custom_col) +
     theme_bw() + 
     theme(legend.position = "none", 
           axis.text = element_blank(), 
@@ -151,8 +133,6 @@ if(T) { # myeloid doublet umap
 
 if(T) { # myeloid sim, mpa
   library(ggplot2)
-  library(ggrepel)
-  library(shadowtext)
   
   myeloid_obs <- read.csv(file = here::here("intermediate/pbmc/anndata_elements/adata_pbmc_obs_mpa_sim.csv"), check.names = FALSE)
   myeloid_umap <- read.csv(file = here::here("intermediate/pbmc/anndata_elements/pbmc_mpa_sim_umap_coordinates.csv"), 
@@ -164,28 +144,13 @@ if(T) { # myeloid sim, mpa
   myeloid_obs$cell_type <- ifelse(myeloid_obs$cell_type=="CD14 Mono", "cMono", myeloid_obs$cell_type)
   myeloid_obs$cell_type <- ifelse(myeloid_obs$cell_type=="CD16 Mono", "nMono", myeloid_obs$cell_type)
   myeloid_map <- myeloid_obs$cell_type; names(myeloid_map) <- myeloid_obs$barcode_2
-  
-  # sim_obs <- read.csv('/media/MPEdge16/MM137/sc/py/py_out/pbmc/check_bc_sim.csv')
-  # mean(myeloid_obs$barcode_2 %in% sim_obs$barcode_2)
-  # myeloid_obs_singlet <- read.csv(file = "/media/MPEdge16/MM137/sc/py/py_out/pbmc/anndata_elements/adata_pbmc_myeloid_obs.csv", check.names = FALSE)
-  # mean(myeloid_obs_singlet$barcode_2 %in% sim_obs$barcode_2)
-  
-  # myeloid_obs$droplet_type <- ifelse(myeloid_obs$droplet_type=="MPA_real", "MPA", myeloid_obs$droplet_type)
-  # myeloid_obs$droplet_type <- ifelse(myeloid_obs$droplet_type=="MPA_sim", "SimMPA", myeloid_obs$droplet_type)
-  # myeloid_obs$droplet_type <- ifelse(myeloid_obs$droplet_type=="singlet", "other", myeloid_obs$droplet_type)
-  # myeloid_obs$droplet_type <- ifelse(myeloid_obs$barcode_2 %in% cmo_bc, 'cMono', myeloid_obs$droplet_type)
-  # myeloid_obs$droplet_type <- ifelse(myeloid_obs$cell_type=='Platelet', 'Platelet', myeloid_obs$droplet_type)
-  # myeloid_umap$cluster <- factor(myeloid_obs$cell_type)
   myeloid_umap$cluster <- myeloid_map[myeloid_umap$barcode]
   myeloid_umap$cluster[grep(pattern = "\\-dbl$", x = myeloid_umap$barcode)] <- "SimMPA"
   myeloid_umap$cluster <- factor(myeloid_umap$cluster)
   
-  myl_back <- myeloid_umap#[myeloid_umap$cluster=='other',]
-  myl_front <- myeloid_umap#[myeloid_umap$cluster!='other',]
-  
-  uclus <- unique(myl_front$cluster)
+  uclus <- unique(myeloid_umap$cluster)
 
-  set.seed(123); myl_front <- myl_front[sample(1:nrow(myl_front),nrow(myl_front),replace=F),]
+  set.seed(123); myl_front <- myeloid_umap[sample(1:nrow(myeloid_umap),nrow(myeloid_umap),replace=F),]
 
   clusx <- rep(NA, length=length(uclus)); names(clusx) <- uclus; clusy <- clusx
 
@@ -204,23 +169,14 @@ if(T) { # myeloid sim, mpa
                   'Platelet' = '#66FFFF', 
                   'doublet' = '#A9A9A9',
                   'SimMPA' = '#d50000')
-  # saveRDS(object = custom_col, file = here::here("output/figures/MPA_project_color_palette.rds"))
-  
   myl_umap <- ggplot() + 
-    # ggrastr::geom_point_rast(data = myl_plot_df, aes(x = UMAP1, y = UMAP2, color = cluster, fill = cluster), alpha = 0.4) + 
     ggrastr::geom_point_rast(data = myl_front, aes(x = UMAP1, y = UMAP2, color = cluster, fill = cluster), alpha = 0.4) +
-    # ggrastr::geom_point_rast(data = myl_back, aes(x = UMAP1, y = UMAP2), color = "black", alpha = 0.2) +
-    # geom_point(data = myl_front, aes(x = UMAP1, y = UMAP2, fill = cluster), alpha = 0.9, pch = 21, color = "black", stroke = 0.1) + 
-    # shadowtext::geom_shadowtext(data = anno_df, aes(x = xval, y = yval, label = lab, color = lab), 
-    #                             size = 8, bg.color = "black", bg.r = 0.1) + 
     annotate("text", x = anno_df$xval, y = anno_df$yval, label = anno_df$lab,
              hjust = 0.5, color = "black", fontface = "bold", size = 9) +
     scale_color_manual(values = custom_col) + 
     scale_fill_manual(values = custom_col) + 
-    # guides(color = guide_legend(override.aes = list(size = 7.5, pch = 21, stroke = 0.2, color = "black", alpha = 1))) + 
     theme_bw() + 
     theme(legend.text = element_text(size = 18, face = 'bold'), 
-          # legend.position = "bottom", 
           legend.position = 'none', 
           legend.title = element_blank(), 
           axis.text = element_blank(), 
@@ -318,8 +274,6 @@ if(T) { # SD1 and SD3 (separately) MPA vs cMo
   
   dir.create(here::here("intermediate/mast/mpa_sd_compare"), showWarnings = FALSE, recursive = TRUE)
   
-  # seu$cell_type <- gsub('cMono','CD14 Mono',seu$cell_type)
-  # seu$cell_type <- gsub('MPA','M-platelet',seu$cell_type)
   seu_test_m <- subset(x = seu, subset = cell_type %in% c("cMono", "MPA"))
   seu_test_sd1 <- subset(x = seu_test_m, subset = study_day == "SD1")
   seu_test_sd1$condition_custom <- "media"
@@ -343,10 +297,8 @@ if(T) { # SD1 and SD3 (separately) MPA vs cMo
                                        gene_set_blacklist = blacklist_platelet_genes)
   difftime(Sys.time(), start_mast, units = "mins")
   
-  # saveRDS(object = seu_mast_sd1, file = "/media/WD24/sadie10x/rna/mast/mpa_sd_compare/mast_dge_mpa_vs_cmono_sd1_29Jan2024.rds")
   write.csv(x = seu_mast_sd1$media$cMo_MPA$raw_res, file = here::here("intermediate/mast/mpa_sd_compare/mast_dge_mpa_vs_cmono_sd1_29Jan2024.csv"), row.names = F)
 
-  # seu_test_m <- subset(x = seu, subset = cell_type %in% c("CD14 Mono", "M-platelet"))
   seu_test_sd3 <- subset(x = seu_test_m, subset = study_day == "SD3")
   seu_test_sd3$condition_custom <- "media"
   seu_test_sd3$cluster_custom <- "cMo_MPA"
@@ -369,7 +321,6 @@ if(T) { # SD1 and SD3 (separately) MPA vs cMo
                                        gene_set_blacklist = blacklist_platelet_genes)
   difftime(Sys.time(), start_mast, units = "mins")
   
-  # saveRDS(object = seu_mast_sd3, file = "/media/WD24/sadie10x/rna/mast/mpa_sd_compare/mast_dge_mpa_vs_cmono_sd3_29Jan2024.rds")
   write.csv(x = seu_mast_sd3$media$cMo_MPA$raw_res, file = here::here("intermediate/mast/mpa_sd_compare/mast_dge_mpa_vs_cmono_sd3_29Jan2024.csv"), row.names = F)
   
   start_mast_gsea <- Sys.time()

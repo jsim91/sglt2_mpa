@@ -10,7 +10,6 @@ library(pheatmap)
 
 library(ggvenn)
 library(cowplot)
-library(ggrepel)
 
 library(tidytext)   
 

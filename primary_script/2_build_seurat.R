@@ -31,9 +31,6 @@ if(seurat_version!="5.0.1" || seuratobject_version!="5.0.1") {
 
 sink.reset()
 
-# options(future.globals.maxSize=Inf)
-# future::plan(multisession, workers = 20) # https://github.com/HenrikBengtsson/future/issues/420
-
 cr_h5_fil <- list.files(path = here::here("primary_dependents/cellranger_h5"), pattern = "filtered_feature_bc_matrix.h5", 
                         all.files = TRUE, full.names = TRUE, recursive = TRUE, include.dirs = TRUE)
 cr_h5_fil <- cr_h5_fil[!grepl(pattern = "_standard", x = cr_h5_fil)]
@@ -127,12 +124,10 @@ if(F) {
 merged_obj <- merge(x = seu_list[[1]], y = seu_list[2:length(seu_list)])
 merged_obj_join <- JoinLayers(object = merged_obj)
 saveRDS(object = merged_obj_join, file = here::here("intermediate/seurat/all_cells/mm_pbmc_merged.rds"))
-# seurat to anndata: intermediate/seurat/all_cells/mm_pbmc_lane_list.rds
 
 counts_matrix <- GetAssayData(object = merged_obj_join, assay = "RNA", layer = "counts")
 obj_meta <- merged_obj_join@meta.data
 gene_names <- row.names(counts_matrix)
-# barcode_names <- colnames(merged_obj_join)
 
 dir.create(here::here("intermediate/seurat"), showWarnings = FALSE, recursive = TRUE)
 writeMM(obj = counts_matrix, file = here::here("intermediate/seurat/RNA_assay_counts.mtx"))

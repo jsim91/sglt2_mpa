@@ -1,4 +1,3 @@
-# intermediate/pbmc/anndata_elements/pbmc_anndata_to_seurat.R
 rm(list = ls()); gc()
 
 library(Seurat)
@@ -36,7 +35,6 @@ row.names(fmat) <- uid; colnames(fmat) <- uclus
 for(i in 1:nrow(fmat)) {
   clnums <- seu$subset_cluster[seu$full_id==row.names(fmat)[i]]
   for(j in 1:ncol(fmat)) {
-    # fmat[i,j] <- mean(clnums==colnames(fmat)[j]) * 100
     fmat[i,j] <- sum(clnums==colnames(fmat)[j])
   }
 }
