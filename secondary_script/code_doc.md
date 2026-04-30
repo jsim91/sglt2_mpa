@@ -92,27 +92,23 @@ This document describes the canonical execution sequence for scripts in `primary
 ### 4_integrate_global.ipynb
 
 - Role / Purpose:
-	- Runs global PBMC integration, clustering, broad cell-type annotation, and exports global PBMC artifacts.
+	- Runs global PBMC integration, clustering, broad cell-type annotation, exports cell-type subsets, and writes platelet matrix elements for downstream R analysis.
 - Primary Inputs:
 	- `intermediate/mm_pbmc.h5ad`
 	- `primary_dependents/EXCLUDE_XY_TCR_IG.csv`
 	- Cell metadata columns (lane, study_id, QC metrics)
 - Primary Outputs:
-	- `intermediate/pbmc/pbmc_int.h5ad`
-	- `intermediate/pbmc/pbmc_final.h5ad`
 	- `intermediate/pbmc/pbmc_subset_tnk.h5ad`
 	- `intermediate/pbmc/pbmc_subset_b.h5ad`
 	- `intermediate/pbmc/pbmc_subset_myeloid.h5ad`
 	- `intermediate/pbmc/pbmc_subset_platelet.h5ad`
 	- `intermediate/pbmc/pbmc_subset_hspc.h5ad`
-	- `intermediate/pbmc/anndata_elements/adata_pbmc_counts.mtx`
-	- `intermediate/pbmc/anndata_elements/adata_pbmc_obs.csv`
-	- `intermediate/pbmc/anndata_elements/adata_pbmc_var.csv`
-	- `intermediate/pbmc/anndata_elements/adata_pbmc_latent_coordinates.csv`
-	- `intermediate/pbmc/anndata_elements/adata_pbmc_umap_coordinates.csv`
+	- `intermediate/pbmc/anndata_elements/adata_pbmc_platelet_counts.mtx`
+	- `intermediate/pbmc/anndata_elements/adata_pbmc_platelet_obs.csv`
+	- `intermediate/pbmc/anndata_elements/adata_pbmc_platelet_var.csv`
 - Other Relevant Context:
 	- Uses SCVI tuning/training, then neighbors/Leiden/UMAP.
-	- Provides key inputs for scripts 5, 8, 9_13, and 12.
+	- Provides key inputs for scripts 5, 8, 9_13, and 10.
 
 ### 5_integrate_myeloid.ipynb
 
@@ -125,7 +121,6 @@ This document describes the canonical execution sequence for scripts in `primary
 	- `intermediate/pbmc/pbmc_myeloid_int.h5ad`
 	- `intermediate/pbmc/pbmc_myeloid.h5ad`
 	- `intermediate/pbmc/pbmc_myeloid_cell_map.csv`
-	- `intermediate/pbmc/myeloid/object/pbmc_myeloid_small.h5ad`
 	- `intermediate/pbmc/anndata_elements/adata_pbmc_myeloid_counts.mtx`
 	- `intermediate/pbmc/anndata_elements/adata_pbmc_myeloid_obs.csv`
 	- `intermediate/pbmc/anndata_elements/adata_pbmc_myeloid_var.csv`
@@ -144,11 +139,14 @@ This document describes the canonical execution sequence for scripts in `primary
 	- `primary_dependents/snp_correlation/**`
 	- `intermediate/solo_scores_MM*.csv`
 	- `primary_dependents/MM148_key.csv`
+	- `primary_dependents/EXCLUDE_XY_TCR_IG.csv`
+	- `intermediate/pbmc/pbmc_myeloid.h5ad` (for M-platelet barcode identification)
 - Primary Outputs:
 	- `intermediate/pbmc/pbmc_int_dbl.h5ad`
 	- `intermediate/pbmc/pbmc_myeloid_dbl.h5ad`
 - Other Relevant Context:
 	- Reconstructs lane-level metadata and doublet annotations directly from raw and intermediate sources.
+	- Uses the singlet myeloid object (Script 5) to identify M-platelet barcodes.
 	- Feeds script 7 for focused myeloid/platelet doublet analysis.
 
 ### 7_dbl_integrate_myeloid_platelet.ipynb
@@ -157,7 +155,8 @@ This document describes the canonical execution sequence for scripts in `primary
 	- Focuses on myeloid + platelet populations from the doublet-inclusive object and computes marker contrasts.
 - Primary Inputs:
 	- `intermediate/pbmc/pbmc_int_dbl.h5ad`
-	- `intermediate/pbmc/pbmc_final.h5ad` (for MPA singlet reference checks)
+	- `intermediate/pbmc/pbmc_myeloid.h5ad` (singlet myeloid reference)
+	- `primary_dependents/EXCLUDE_XY_TCR_IG.csv`
 - Primary Outputs:
 	- `intermediate/pbmc/pbmc_myeloid_platelet_int_dbl.h5ad`
 	- `intermediate/pbmc/MPA_vs_Platelet_scanpy_markers.csv`
@@ -175,7 +174,7 @@ This document describes the canonical execution sequence for scripts in `primary
 	- Simulates cMono+platelet doublets (SimMPA), integrates with observed cells, and exports simulation artifacts.
 - Primary Inputs:
 	- `intermediate/pbmc/pbmc_myeloid.h5ad`
-	- `intermediate/pbmc/pbmc_final.h5ad`
+	- `intermediate/pbmc/pbmc_subset_platelet.h5ad`
 	- `primary_dependents/EXCLUDE_XY_TCR_IG.csv`
 - Primary Outputs:
 	- `intermediate/pbmc/pbmc_simulation_dataset.h5ad`
@@ -193,11 +192,18 @@ This document describes the canonical execution sequence for scripts in `primary
 - Role / Purpose:
 	- Runs MAST DGE workflows for key PBMC/myeloid contrasts, creates panel-relevant visualizations, and writes intermediate MAST products.
 - Primary Inputs:
-	- `intermediate/pbmc/anndata_elements/adata_pbmc_*.{mtx,csv}`
-	- `intermediate/pbmc/anndata_elements/adata_pbmc_myeloid_*.csv`
-	- `intermediate/pbmc_myeloid_platelet_int_dbl_*_to_r.csv`
+	- `intermediate/pbmc/anndata_elements/adata_pbmc_myeloid_counts.mtx`
+	- `intermediate/pbmc/anndata_elements/adata_pbmc_myeloid_obs.csv`
+	- `intermediate/pbmc/anndata_elements/adata_pbmc_myeloid_var.csv`
+	- `intermediate/pbmc/anndata_elements/adata_pbmc_myeloid_umap_coordinates.csv`
+	- `intermediate/pbmc/anndata_elements/adata_pbmc_platelet_counts.mtx`
+	- `intermediate/pbmc/anndata_elements/adata_pbmc_platelet_obs.csv`
+	- `intermediate/pbmc/anndata_elements/adata_pbmc_platelet_var.csv`
+	- `intermediate/pbmc_myeloid_platelet_int_dbl_obs_to_r.csv`
+	- `intermediate/pbmc_myeloid_platelet_int_dbl_umap_coordinates_to_r.csv`
 	- `intermediate/pbmc/anndata_elements/adata_pbmc_obs_mpa_sim.csv`
 	- `intermediate/pbmc/anndata_elements/pbmc_mpa_sim_umap_coordinates.csv`
+	- `intermediate/seurat/MM148_pbmc_seurat.rds` (cached; rebuilt from elements when `if(F)` block is active)
 	- `primary_dependents/seurat_dge_local.R`
 - Primary Outputs:
 	- `intermediate/seurat/MM148_pbmc_seurat.rds`
@@ -218,10 +224,10 @@ This document describes the canonical execution sequence for scripts in `primary
 - Role / Purpose:
 	- Builds the marker bubble visualization panel across monocyte, platelet, MPA, simulated, and doublet populations.
 - Primary Inputs:
-	- `intermediate/pbmc/pbmc_final.h5ad`
+	- `intermediate/pbmc/pbmc_subset_platelet.h5ad`
 	- `intermediate/pbmc/pbmc_myeloid.h5ad`
 	- `intermediate/pbmc/pbmc_myeloid_platelet_int_dbl.h5ad`
-	- simulation object(s) from script 8
+	- `intermediate/pbmc/pbmc_myeloid_platelet_int_sim.h5ad`
 - Primary Outputs:
 	- Bubble plot figure exports (for manuscript panel B)
 - Other Relevant Context:
@@ -284,7 +290,7 @@ This document describes the canonical execution sequence for scripts in `primary
 - Primary Inputs:
 	- `intermediate/pbmc/anndata_elements/mm_myeloid_named_cluster_cell_counts.csv` (from Script 12)
 - Primary Outputs:
-	- Violin plot figures for MPA and cMono frequency visualization
+	- `figures/mm148/mpa_cmono_frequency.pdf`
 - Other Relevant Context:
 	- Uses myeloid-normalized frequencies (% of total myeloid cells per sample).
 	- Focuses on key comparisons: SD1→SD2 and SD1→SD3.
@@ -295,10 +301,10 @@ This document describes the canonical execution sequence for scripts in `primary
 - `1` produces SOLO scores used by `2` and `6`.
 - `2` produces matrix/meta exports used by `3`.
 - `3` produces global AnnData used by `4`.
-- `4` produces PBMC subsets and anndata elements used by `5`, `8`, `9_13`, and `10`.
-- `5` produces myeloid exports used by `7`, `9_13`, `12`, and `15`.
+- `4` produces PBMC subsets and platelet anndata elements used by `5`, `8`, `9_13`, and `10`.
+- `5` produces myeloid exports used by `6`, `7`, `9_13`, `12`, and `15`.
 - `6` produces doublet-inclusive PBMC object used by `7`.
-- `7` produces myeloid/platelet doublet exports used by `9_13`.
+- `7` produces myeloid/platelet doublet exports used by `9_13` and `10`.
 - `8` produces simulation outputs used by `9_13` and `11`.
 - `9_13` produces MAST outputs used by `11` and `14`.
 - `11` produces real-versus-sim MAST output used by `14`.
