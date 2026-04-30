@@ -157,7 +157,10 @@ This document describes the canonical execution sequence for scripts in `primary
 	- Uses the singlet myeloid object (Script 5) to identify M-platelet barcodes.
 	- Feeds script 7 for focused myeloid/platelet doublet analysis.
 - Cell Annotation:
-	- No new cell-type labels are assigned. Cells carry over Souporcell and SOLO doublet/singlet status from earlier metadata; cluster numbering from Leiden is used only for exploratory visualization.
+	- Leiden clustering at resolution=3 is run on all cells including Souporcell and SOLO doublets, producing integer `overcluster` labels.
+	- Overclusters are mapped to broad lineage groups via a `type_ref` dictionary; Myeloid clusters (6, 9, 12, 16, 17, 21, 23, 24, 26, 27, 28, 33, 34, 40) and Platelet cluster (31) are identified by marker inspection. Label is stored in `cell_group`.
+	- M-platelet barcodes from Script 5 (`merged_type == 'M-platelet'`) are used to verify which overclusters in the doublet-inclusive space contain the singlet MPA population.
+	- The exported `pbmc_myeloid_dbl.h5ad` contains only cells where `cell_group == 'Myeloid'`, capturing both true myeloid singlets and doublets that co-cluster with myeloid populations.
 
 ### 7_dbl_integrate_myeloid_platelet.ipynb
 
