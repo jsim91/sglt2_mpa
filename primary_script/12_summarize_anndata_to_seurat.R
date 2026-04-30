@@ -25,18 +25,17 @@ seu <- NormalizeData(object = seu, assay = "RNA", normalization.method = "LogNor
 Idents(seu) <- seu@meta.data$subset_cluster
 
 saveRDS(object = seu, file = here::here("intermediate/pbmc/anndata_elements/pbmc_seurat.rds"))
-seu <- readRDS(file = here::here("intermediate/pbmc/anndata_elements/pbmc_seurat.rds"))
 
 seu <- AddMetaData(object = seu, metadata = paste0(seu$study_id,"_",seu$study_day), col.name = "full_id")
 uid <- unique(seu$full_id); uid <- uid[order(uid)]
 
 uct <- unique(seu$cell_type); uct <- uct[order(uct)]
-fmat2 <- matrix(data = NA, nrow = length(uid), ncol = length(uct))
-row.names(fmat2) <- uid; colnames(fmat2) <- uct
-for(i in 1:nrow(fmat2)) {
-  clnames <- seu$cell_type[seu$full_id==row.names(fmat2)[i]]
-  for(j in 1:ncol(fmat2)) {
-    fmat2[i,j] <- sum(clnames==colnames(fmat2)[j])
+fmat <- matrix(data = NA, nrow = length(uid), ncol = length(uct))
+row.names(fmat) <- uid; colnames(fmat) <- uct
+for(i in 1:nrow(fmat)) {
+  clnames <- seu$cell_type[seu$full_id==row.names(fmat)[i]]
+  for(j in 1:ncol(fmat)) {
+    fmat[i,j] <- sum(clnames==colnames(fmat)[j])
   }
 }
-write.csv(x = fmat2, file = here::here("intermediate/pbmc/anndata_elements/mm_myeloid_named_cluster_cell_counts.csv"))
+write.csv(x = fmat, file = here::here("intermediate/pbmc/anndata_elements/mm_myeloid_named_cluster_cell_counts.csv"))

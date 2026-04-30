@@ -9,28 +9,142 @@ library(ggplot2)
 dir.create(here::here("intermediate/mast/pbmc_mpa_mono_sd"), showWarnings = FALSE, recursive = TRUE)
 dir.create(here::here("output/figures"), showWarnings = FALSE, recursive = TRUE)
 
-if(F) { # create seurat object from anndata elements once
-  ct <- Matrix::t(Matrix::readMM(file = here::here("intermediate/pbmc/anndata_elements/adata_pbmc_counts.mtx")))
-  obs <- read.csv(file = here::here("intermediate/pbmc/anndata_elements/adata_pbmc_obs.csv"))
-  var <- read.csv(file = here::here("intermediate/pbmc/anndata_elements/adata_pbmc_var.csv"))
-  umap_coord <- read.csv(file = here::here("intermediate/pbmc/anndata_elements/adata_pbmc_umap_coordinates.csv"), header = FALSE)
-  colnames(umap_coord) <- c("UMAP1","UMAP2"); row.names(umap_coord) <- obs$barcode_2
-  latent_coord <- read.csv(file = here::here("intermediate/pbmc/anndata_elements/adata_pbmc_latent_coordinates.csv"), header = FALSE)
-  colnames(latent_coord) <- paste0("latent",1:ncol(latent_coord)); row.names(latent_coord) <- obs$barcode_2
-  
-  colnames(ct) <- obs$barcode_2
-  row.names(ct) <- var[,1]
-  
-  seu <- Seurat::CreateSeuratObject(counts = ct, assay = "RNA", meta.data = obs)
+if(F) { # create seurat object from myeloid + platelet anndata elements once
+  myeloid_req <- c(
+    "intermediate/pbmc/anndata_elements/adata_pbmc_myeloid_counts.mtx",
+    "intermediate/pbmc/anndata_elements/adata_pbmc_myeloid_obs.csv",
+    "intermediate/pbmc/anndata_elements/adata_pbmc_myeloid_var.csv"
+  )
+  platelet_req <- c(
+    "intermediate/pbmc/anndata_elements/adata_pbmc_platelet_counts.mtx",
+    "intermediate/pbmc/anndata_elements/adata_pbmc_platelet_obs.csv",
+    "intermediate/pbmc/anndata_elements/adata_pbmc_platelet_var.csv"
+  )
+  req_paths <- c(myeloid_req, platelet_req)
+  req_full <- vapply(req_paths, here::here, character(1))
+  if(!all(file.exists(req_full))) {
+    missing_paths <- req_paths[!file.exists(req_full)]
+    stop(
+      paste0(
+        "Missing myeloid/platelet anndata elements needed to rebuild Seurat object:\n",
+        paste0(" - ", missing_paths, collapse = "\n"),
+        "\n\nWrite platelet anndata elements first (counts/obs/var), then rerun with if(F)."
+      )
+    )
+  }
+
+  build_seu_from_elements <- function(counts_path, obs_path, var_path, prefix_name = "obj") {
+    ct <- Matrix::t(Matrix::readMM(file = here::here(counts_path)))
+    obs <- read.csv(file = here::here(obs_path), check.names = FALSE)
+    var <- read.csv(file = here::here(var_path), check.names = FALSE)
+
+    if(!"barcode_2" %in% colnames(obs)) {
+      if("barcode_2.1" %in% colnames(obs)) {
+        obs$barcode_2 <- obs$barcode_2.1
+      } else {
+        stop(paste0("Could not find barcode_2 in ", prefix_name, " obs file."))
+      }
+    }
+
+    if(!"cell_type" %in% colnames(obs)) {
+      if("merged_type" %in% colnames(obs)) {
+        obs$cell_type <- as.character(obs$merged_type)
+      } else {
+        stop(paste0("Could not find cell_type or merged_type in ", prefix_name, " obs file."))
+      }
+    }
+    if(!"merged_type" %in% colnames(obs)) {
+      obs$merged_type <- as.character(obs$cell_type)
+    }
+
+    required_meta <- c("barcode_2", "study_id", "study_day", "cell_type")
+    missing_meta <- required_meta[!required_meta %in% colnames(obs)]
+    if(length(missing_meta) > 0) {
+      stop(paste0("Missing required metadata columns in ", prefix_name, " obs file: ", paste(missing_meta, collapse = ", ")))
+    }
+
+    obs$barcode_2 <- as.character(obs$barcode_2)
+    obs$study_id <- as.character(obs$study_id)
+    obs$study_day <- as.character(obs$study_day)
+    obs$cell_type <- as.character(obs$cell_type)
+    obs$merged_type <- as.character(obs$merged_type)
+
+    genes <- as.character(var[[1]])
+    if(any(is.na(genes)) || any(genes == "")) {
+      stop(paste0("Missing or blank gene names in ", prefix_name, " var file."))
+    }
+    if(anyDuplicated(genes) > 0) {
+      stop(paste0("Duplicate gene names in ", prefix_name, " var file."))
+    }
+    if(any(is.na(obs$barcode_2)) || any(obs$barcode_2 == "")) {
+      stop(paste0("Missing or blank barcodes in ", prefix_name, " obs file."))
+    }
+    if(any(is.na(obs$study_id)) || any(obs$study_id == "")) {
+      stop(paste0("Missing or blank study_id values in ", prefix_name, " obs file."))
+    }
+    if(any(is.na(obs$study_day)) || any(obs$study_day == "")) {
+      stop(paste0("Missing or blank study_day values in ", prefix_name, " obs file."))
+    }
+    if(any(is.na(obs$cell_type)) || any(obs$cell_type == "")) {
+      stop(paste0("Missing or blank cell_type values in ", prefix_name, " obs file."))
+    }
+    if(anyDuplicated(obs$barcode_2) > 0) {
+      stop(paste0("Duplicate barcodes in ", prefix_name, " obs file."))
+    }
+    if(nrow(ct) != length(genes)) {
+      stop(paste0("Gene count mismatch in ", prefix_name, ": nrow(counts)=", nrow(ct), " vs length(var)=", length(genes)))
+    }
+    if(ncol(ct) != nrow(obs)) {
+      stop(paste0("Cell count mismatch in ", prefix_name, ": ncol(counts)=", ncol(ct), " vs nrow(obs)=", nrow(obs)))
+    }
+
+    row.names(ct) <- genes
+    colnames(ct) <- obs$barcode_2
+    row.names(obs) <- obs$barcode_2
+    obs <- obs[colnames(ct), , drop = FALSE]
+
+    seu_obj <- Seurat::CreateSeuratObject(counts = ct, assay = "RNA", meta.data = obs)
+    return(seu_obj)
+  }
+
+  seu_myeloid <- build_seu_from_elements(
+    counts_path = "intermediate/pbmc/anndata_elements/adata_pbmc_myeloid_counts.mtx",
+    obs_path = "intermediate/pbmc/anndata_elements/adata_pbmc_myeloid_obs.csv",
+    var_path = "intermediate/pbmc/anndata_elements/adata_pbmc_myeloid_var.csv",
+    prefix_name = "myeloid"
+  )
+
+  seu_platelet <- build_seu_from_elements(
+    counts_path = "intermediate/pbmc/anndata_elements/adata_pbmc_platelet_counts.mtx",
+    obs_path = "intermediate/pbmc/anndata_elements/adata_pbmc_platelet_obs.csv",
+    var_path = "intermediate/pbmc/anndata_elements/adata_pbmc_platelet_var.csv",
+    prefix_name = "platelet"
+  )
+
+  common_genes <- intersect(rownames(seu_myeloid), rownames(seu_platelet))
+  if(length(common_genes) == 0) {
+    stop("No common genes across myeloid and platelet anndata elements.")
+  }
+  common_genes <- sort(common_genes)
+
+  seu_myeloid <- subset(seu_myeloid, features = common_genes)
+  seu_platelet <- subset(seu_platelet, features = common_genes)
+
+  if(!identical(rownames(seu_myeloid), rownames(seu_platelet))) {
+    stop("Gene order mismatch between myeloid and platelet Seurat objects after feature intersection.")
+  }
+
+  seu <- merge(seu_myeloid, y = seu_platelet, merge.data = FALSE)
+  if(ncol(seu) != (ncol(seu_myeloid) + ncol(seu_platelet))) {
+    stop("Merged Seurat object has unexpected cell count.")
+  }
+
   head(seu@assays$RNA@layers$counts@x,20) # should be ints
   seu <- Seurat::NormalizeData(object = seu, assay = "RNA", normalization.method = "LogNormalize")
   
-  latent_dr <- Seurat::CreateDimReducObject(embeddings = as.matrix(latent_coord), assay = "RNA", key = "latent_")
-  seu[['latent']] <- latent_dr
-  
-  umap_dr <- Seurat::CreateDimReducObject(embeddings = as.matrix(umap_coord), assay = "RNA", key = "umap_")
-  seu[['umap']] <- umap_dr
-  
+  seu$cell_type <- ifelse(seu$cell_type=="M-platelet", "MPA", seu$cell_type)
+  seu$cell_type <- ifelse(seu$cell_type=="CD14 Mono", "cMono", seu$cell_type)
+  seu$cell_type <- ifelse(seu$cell_type=="CD16 Mono", "nMono", seu$cell_type)
   Seurat::Idents(seu) <- seu$cell_type
   saveRDS(object = seu, file = here::here("intermediate/seurat/MM148_pbmc_seurat.rds"))
 } else { # then read in the seurat object on re-run
@@ -241,10 +355,10 @@ if(T) {
   saveRDS(object = mast_gsea_res, file = here::here("intermediate/mast/pbmc_mpa_mono_sd/pbmc_mpa_mono_mast_gsea_sd1sd3_15JAN2025.rds"))
 }
 
-if(T) { # find genes associated with platelets to drop when doing MPA vs CD14 Mono
+if(T) { # find genes associated with platelets to drop when doing MPA vs cMono
   dir.create(here::here("intermediate/mast/platelet_genes"), showWarnings = FALSE, recursive = TRUE)
   
-  seu_test_plt <- subset(x = seu, subset = cell_type %in% c("CD14 Mono", "Platelet"))
+  seu_test_plt <- subset(x = seu, subset = cell_type %in% c("cMono", "Platelet"))
   seu_test_plt$condition_custom <- "media"
   seu_test_plt$cluster_custom <- "cMo_Platelet"
   
@@ -257,7 +371,7 @@ if(T) { # find genes associated with platelets to drop when doing MPA vs CD14 Mo
                                        test_clusters = "cMo_Platelet",
                                        cluster_column = "cluster_custom",
                                        category_column = "cell_type",
-                                       test_categories = c("CD14 Mono","Platelet"),
+                                       test_categories = c("cMono","Platelet"),
                                        test_condition = "all",
                                        condition_column = "condition_custom", # pseudo condition to prevent errors and customize output list name(s); cells were not perturbed, therefore going with 'media'
                                        pid_column = "study_id",
