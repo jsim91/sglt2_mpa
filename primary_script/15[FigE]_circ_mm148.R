@@ -118,6 +118,7 @@ plot_violin <- function(df, x_label = NULL, y_label = NULL, pd = 0.12, ...) {
 }
 
 # Generate figures ----
+dir.create(here::here("output/figures"), showWarnings = FALSE, recursive = TRUE)
 
 # Figure 1: MPA cell frequency
 pl_violin_mpa <- plot_violin(
@@ -151,7 +152,4 @@ cowplot::plot_grid( plot_mpa_cmono,
                     pl_mpa_cmono_legend,
                     ncol = 1, rel_heights = c(1,.1))
 
-# Optional: Save figure
-# ggsave(plot_mpa_cmono,
-#        filename = here::here("figures/mm148/mpa_cmono_frequency.pdf")
-# )
+ggsave(plot_mpa_cmono, filename = here::here("output/figures/mpa_cmono_frequency.pdf"))

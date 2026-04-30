@@ -290,7 +290,7 @@ This document describes the canonical execution sequence for scripts in `primary
 - Primary Inputs:
 	- `intermediate/pbmc/anndata_elements/mm_myeloid_named_cluster_cell_counts.csv` (from Script 12)
 - Primary Outputs:
-	- `figures/mm148/mpa_cmono_frequency.pdf`
+	- `output/figures/mpa_cmono_frequency.pdf`
 - Other Relevant Context:
 	- Uses myeloid-normalized frequencies (% of total myeloid cells per sample).
 	- Focuses on key comparisons: SD1→SD2 and SD1→SD3.
