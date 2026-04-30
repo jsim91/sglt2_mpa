@@ -109,6 +109,10 @@ This document describes the canonical execution sequence for scripts in `primary
 - Other Relevant Context:
 	- Uses SCVI tuning/training, then neighbors/Leiden/UMAP.
 	- Provides key inputs for scripts 5, 8, 9_13, and 10.
+- Cell Annotation:
+	- Leiden clustering at resolution=3 produces integer overclusters.
+	- Overclusters are manually mapped to broad lineage labels via `merge_type_ref` dictionary (inspected via marker dotplot): TNK (clusters 0,2–4,7,9–12,14–18,22,25,27,29,35–37), B (1,13,20,30,31,33), Myeloid (5,6,8,19,21,23,26,28,34), Platelet (24), HSPC (32).
+	- Label stored in `merged_type` column; used only to partition subsets for downstream scripts.
 
 ### 5_integrate_myeloid.ipynb
 
@@ -127,7 +131,11 @@ This document describes the canonical execution sequence for scripts in `primary
 	- `intermediate/pbmc/anndata_elements/adata_pbmc_myeloid_latent_coordinates.csv`
 	- `intermediate/pbmc/anndata_elements/adata_pbmc_myeloid_umap_coordinates.csv`
 - Other Relevant Context:
-	- Generates myeloid labels used downstream in scripts 7, 9_13, and bubble/figure workflows.
+	- Generates myeloid labels used downstream in scripts 6, 9_13, and bubble/figure workflows.
+- Cell Annotation:
+	- Leiden clustering at resolution=1 produces integer overclusters on the myeloid subset only.
+	- Overclusters are manually mapped to refined myeloid labels via `myeloid_types` dictionary (inspected via marker dotplot): CD14 Mono (1–6,8,10–13), CD16 Mono (0), M-platelet (7), cDC2 (9), pDC (14), cDC1 (15).
+	- Label stored in `merged_type` column; this is the canonical myeloid cell-type identity used by all downstream scripts.
 
 ### 6_dbl_integrate_global.ipynb
 
@@ -148,6 +156,8 @@ This document describes the canonical execution sequence for scripts in `primary
 	- Reconstructs lane-level metadata and doublet annotations directly from raw and intermediate sources.
 	- Uses the singlet myeloid object (Script 5) to identify M-platelet barcodes.
 	- Feeds script 7 for focused myeloid/platelet doublet analysis.
+- Cell Annotation:
+	- No new cell-type labels are assigned. Cells carry over Souporcell and SOLO doublet/singlet status from earlier metadata; cluster numbering from Leiden is used only for exploratory visualization.
 
 ### 7_dbl_integrate_myeloid_platelet.ipynb
 
@@ -167,6 +177,11 @@ This document describes the canonical execution sequence for scripts in `primary
 - Other Relevant Context:
 	- Exports R-friendly files later consumed by script 9_13 for figure panels.
 	- Establishes cluster-level doublet frequency metrics for comparison to MPA cluster.
+- Cell Annotation:
+	- Leiden overclustering is run independently on the doublet-inclusive myeloid+platelet object (no labels carried from Script 5).
+	- Overclusters are manually assigned to `ann_types` by inspecting marker expression: cMo (clusters 9,2,4,12,8,15,17,20,3,6), MPA (11), nMo (0), Platelet (16), pDC (18), cDC2 (13), cDC1 (21), doublet (19,1,22,5,14,7,10).
+	- Per-cluster Souporcell and SOLO doublet rates are computed and stored as per-cell frequency metadata columns (`doublet_frequency`, `souporcell_doublet_frequency`, `doublet_sum_frequency`).
+	- Script 5 `merged_type` is used only to look up which overclusters the known M-platelet barcodes fall in; it does not propagate as the working cell identity label.
 
 ### 8_dbl_simulate_myeloid_platelet.ipynb
 
@@ -186,6 +201,11 @@ This document describes the canonical execution sequence for scripts in `primary
 - Other Relevant Context:
 	- SimMPA cells are tagged via barcode suffix logic.
 	- Outputs are consumed by scripts 9_13 and 11.
+- Cell Annotation:
+	- Synthetic doublet cells are labelled `solo_prediction = 'cMo_Platelet_doublet'` and `souporcell_status = 'sim_doublet'` at construction time.
+	- After scVI integration, Leiden clustering at resolution=2 produces new integer overclusters on the combined real+simulated object (independent of Scripts 5 and 7).
+	- Overclusters are manually mapped to `cell_type` via `cell_type_dict`: CD14 Mono (2–12,15–19,21,22), CD16 Mono (0,11), MPA (1,26), Int Mono (3), Platelet (13), cDC2 (14), pDC (20), cDC1 (25), migratory myeloid (23), other myeloid (24).
+	- A final `droplet_type` label is derived: cells with `cell_type == 'MPA'` → `MPA_real`; cells with `solo_prediction == 'cMo_Platelet_doublet'` → `MPA_sim`; all others inherit their `solo_prediction` value. This is the label used by scripts 9_13 and 11 for DGE.
 
 ### 9_13[FigA]_test_mast.R (Steps 9 and 13; Figure A)
 
