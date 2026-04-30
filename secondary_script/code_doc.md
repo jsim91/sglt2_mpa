@@ -283,7 +283,7 @@ This document describes the canonical execution sequence for scripts in `primary
 	- Depends on outputs from scripts 9_13 and 11.
 	- Uses Hallmark pathways and NES-based visualization.
 
-### 15[FigE]_circ_mm148.R (Figure E)
+### 15[FigE]_plot_myeloid_frequency.R (Figure E)
 
 - Role / Purpose:
 	- Visualizes myeloid cell-type frequencies (MPA and cMono) across study timepoints using refined myeloid clustering from Script 5.
