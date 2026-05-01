@@ -250,11 +250,7 @@ if(T) { # myeloid sim, mpa
   colnames(myeloid_umap) <- c("UMAP1","UMAP2")
   myeloid_umap$barcode <- myeloid_obs$barcode_2
   
-  myeloid_mapping <- read.csv(file = '/media/MPEdge16/MM137/sc/py/py_out/pbmc/anndata_elements/adata_pbmc_obs_mpa_sim_2.csv')
-  myeloid_mapping$sim_cell_type <- ifelse(myeloid_mapping$sim_cell_type=="M-platelet", "MPA", myeloid_mapping$sim_cell_type)
-  myeloid_mapping$sim_cell_type <- ifelse(myeloid_mapping$sim_cell_type=="CD14 Mono", "cMono", myeloid_mapping$sim_cell_type)
-  myeloid_mapping$sim_cell_type <- ifelse(myeloid_mapping$sim_cell_type=="CD16 Mono", "nMono", myeloid_mapping$sim_cell_type)
-  myeloid_map <- myeloid_mapping$sim_cell_type; names(myeloid_map) <- myeloid_mapping$barcode_2
+  myeloid_map <- myeloid_obs$cell_type; names(myeloid_map) <- myeloid_obs$barcode_2
   
   myeloid_umap$cluster <- myeloid_map[myeloid_umap$barcode]
   myeloid_umap$cluster[grep(pattern = "\\-dbl$", x = myeloid_umap$barcode)] <- "SimMPA"
