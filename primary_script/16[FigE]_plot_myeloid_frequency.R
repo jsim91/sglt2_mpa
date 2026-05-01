@@ -19,7 +19,7 @@ library(trelliscopejs)
 library(stringr)
 
 # Load data ----
-# Read myeloid cell counts by type and sample (output from script 12)
+# Read myeloid cell counts by type and sample (output from script 14)
 # First column contains subject_id_study_day row identifiers from Script 12's write.csv()
 mm148_myeloid_raw <- read_csv(here::here("intermediate/pbmc/anndata_elements/mm_myeloid_named_cluster_cell_counts.csv"))
 

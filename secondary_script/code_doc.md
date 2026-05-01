@@ -15,6 +15,13 @@ This document describes the canonical execution sequence for scripts in `primary
 - Expected location pattern in this repo: `primary_dependents/cellranger_h5/10872-MM-*/filtered_feature_bc_matrix.h5`.
 - These large input files are not expected to be versioned in git and must be provisioned before running the entrypoint notebook.
 
+## Required Count Matrix Dependency
+
+- Script 7 (`7_score_doublets_scds.R`) requires per-lane count matrices exported from the Cell Ranger HDF5 files.
+- Expected location pattern: `primary_dependents/counts_from_10x_h5/10872-MM-{1..8}_counts.mtx` with matching `_obs_names.csv` and `_var_names.csv` files.
+- A placeholder directory exists at `primary_dependents/counts_from_10x_h5/` with a `README.txt` describing the expected file layout.
+- These files are not versioned in git. They can be generated from the Cell Ranger HDF5 files or requested from the study group (see `README.md` Data Availability Statement).
+
 ## Data Availability Reference
 
 - For data sharing policy and request language, see the Data Availability Statement in [README.md](../README.md#data-availability-statement).
@@ -37,7 +44,7 @@ This document describes the canonical execution sequence for scripts in `primary
 5. Score per-lane doublets across four algorithms and compile merged doublet call table (`7`, `8`).
 6. Integrate doublet-inclusive myeloid+platelet populations and compute doublet metrics (`9`).
 7. Simulate MPA-like doublets and compare to observed MPAs (`10`).
-8. Run downstream DGE/GSEA and figure-generation scripts (`11_13`, `12`, `13`, `14`, `15`).
+8. Run downstream DGE/GSEA and figure-generation scripts (`11_13`, `12`, `13`, `14`, `15`, `16`).
 
 ## Script Sequence Details
 
@@ -212,8 +219,9 @@ This document describes the canonical execution sequence for scripts in `primary
 - Role / Purpose:
 	- Focuses on myeloid + platelet populations from the doublet-inclusive object, maps multi-algorithm doublet predictions, and computes marker contrasts.
 - Primary Inputs:
-	- `intermediate/pbmc/pbmc_int_dbl.h5ad`
-	- `intermediate/pbmc/pbmc_myeloid.h5ad` (singlet myeloid reference)
+	- `intermediate/pbmc/pbmc_int_dbl.h5ad` (from script 6)
+	- `intermediate/pbmc/pbmc_myeloid_dbl.h5ad` (from script 6)
+	- `intermediate/pbmc/pbmc_myeloid.h5ad` (singlet myeloid reference, from script 5)
 	- `intermediate/pbmc/doublet_scores.csv` (from script 8)
 	- `primary_dependents/EXCLUDE_XY_TCR_IG.csv`
 - Primary Outputs:
@@ -237,8 +245,9 @@ This document describes the canonical execution sequence for scripts in `primary
 - Role / Purpose:
 	- Simulates cMono+platelet doublets (SimMPA), integrates with observed cells, and exports simulation artifacts.
 - Primary Inputs:
-	- `intermediate/pbmc/pbmc_myeloid.h5ad`
-	- `intermediate/pbmc/pbmc_subset_platelet.h5ad`
+	- `intermediate/pbmc/pbmc_myeloid.h5ad` (from script 5)
+	- `intermediate/pbmc/pbmc_subset_platelet.h5ad` (from script 4)
+	- `intermediate/pbmc_myeloid_platelet_int_dbl_obs_to_r.csv` (from script 9)
 	- `primary_dependents/EXCLUDE_XY_TCR_IG.csv`
 - Primary Outputs:
 	- `intermediate/pbmc/pbmc_simulation_dataset.h5ad`
@@ -301,7 +310,7 @@ This document describes the canonical execution sequence for scripts in `primary
 	- Bubble plot figure exports (for manuscript panel B)
 - Other Relevant Context:
 	- This script is figure-focused and typically run after core object generation is complete.
-	- Reads objects from scripts 5, 9, and 10.
+	- Reads objects from scripts 4, 5, 9, and 10.
 
 ### 13_test_mast_real_vs_sim.R (Upstream Input For Script 15)
 
@@ -358,7 +367,7 @@ This document describes the canonical execution sequence for scripts in `primary
 - Role / Purpose:
 	- Visualizes myeloid cell-type frequencies (MPA and cMono) across study timepoints using refined myeloid clustering from Script 5.
 - Primary Inputs:
-	- `intermediate/pbmc/anndata_elements/mm_myeloid_named_cluster_cell_counts.csv` (from Script 12)
+	- `intermediate/pbmc/anndata_elements/mm_myeloid_named_cluster_cell_counts.csv` (from Script 14)
 - Primary Outputs:
 	- `output/figures/mpa_cmono_frequency.pdf`
 - Other Relevant Context:
@@ -368,17 +377,19 @@ This document describes the canonical execution sequence for scripts in `primary
 
 ## Dependency Handoff Map
 
-- `1` produces SOLO scores used by `2` and `6`.
-- `2` produces matrix/meta exports used by `3`.
-- `3` produces global AnnData used by `4`.
-- `4` produces PBMC subsets and platelet anndata elements used by `5`, `8`, `9_13`, and `10`.
-- `5` produces myeloid exports used by `6`, `7`, `9_13`, `12`, and `15`.
-- `6` produces doublet-inclusive PBMC object used by `7`.
-- `7` produces myeloid/platelet doublet exports used by `9_13` and `10`.
-- `8` produces simulation outputs used by `9_13` and `11`.
-- `9_13` produces MAST outputs used by `11` and `14`.
-- `11` produces real-versus-sim MAST output used by `14`.
-- `12` produces myeloid count summaries used by `15`.
+- `1` produces SOLO scores consumed by `2` and `6`.
+- `2` produces matrix/meta/MTX exports consumed by `3`.
+- `3` produces global AnnData consumed by `4`.
+- `4` produces PBMC subsets and platelet anndata elements consumed by `5`, `10`, `11_13`, and `12`.
+- `5` produces myeloid AnnData and anndata elements consumed by `6`, `9`, `11_13`, `12`, and `14`.
+- `6` produces doublet-inclusive PBMC and myeloid objects (`pbmc_int_dbl.h5ad`, `pbmc_myeloid_dbl.h5ad`) consumed by `9`.
+- `7` produces per-lane cxds TSVs consumed by `8`.
+- `8` produces merged `doublet_scores.csv` consumed by `9`.
+- `9` produces myeloid+platelet doublet object, marker CSVs, and R-ready obs/UMAP exports consumed by `10`, `11_13`, and `12`.
+- `10` produces simulation AnnData and anndata elements consumed by `11_13`, `12`, and `13`.
+- `11_13` (step 11 pass) produces MAST results and platelet gene blacklist consumed by `13` and `15`.
+- `13` produces real-versus-sim MAST RDS consumed by `15`.
+- `14` produces myeloid Seurat object and count table consumed by `16`.
 
 ## Execution Notes
 
