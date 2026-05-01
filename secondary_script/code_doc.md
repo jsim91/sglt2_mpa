@@ -13,7 +13,7 @@ This document describes the canonical execution sequence for scripts in `primary
 
 - This workflow depends on external 10x Cell Ranger filtered matrix files (`filtered_feature_bc_matrix.h5`) for each lane.
 - Expected location pattern in this repo: `primary_dependents/cellranger_h5/10872-MM-*/filtered_feature_bc_matrix.h5`.
-- These large input files are not expected to be versioned in git and must be provisioned before running the entrypoint notebook.
+- These large input files are not expected to be versioned in git and must be provisioned before running the entrypoint notebook. See data availability.
 
 ## Required Count Matrix Dependency
 
