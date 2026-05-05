@@ -247,7 +247,6 @@ This document describes the canonical execution sequence for scripts in `primary
 - Primary Inputs:
 	- `intermediate/pbmc/pbmc_myeloid.h5ad` (from script 5)
 	- `intermediate/pbmc/pbmc_subset_platelet.h5ad` (from script 4)
-	- `intermediate/pbmc_myeloid_platelet_int_dbl_obs_to_r.csv` (from script 9)
 	- `primary_dependents/EXCLUDE_XY_TCR_IG.csv`
 - Primary Outputs:
 	- `intermediate/pbmc/pbmc_simulation_dataset.h5ad`
