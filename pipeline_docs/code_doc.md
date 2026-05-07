@@ -5,7 +5,7 @@ This document describes the canonical execution sequence for scripts in `primary
 ## Start Here
 
 - Workflow entrypoint: run `primary_script/1_pre_detect_doublets.ipynb` first.
-- Primary sequence (single pass): `1` -> `2` -> `3` -> `4` -> `5` -> `6` -> `7` -> `8` -> `9` -> `10` -> `11` -> `13` -> `12` -> `14`.
+- Primary sequence (single pass): `1` -> `2` -> `3` -> `4` -> `5` -> `6` -> `7` -> `8` -> `9` -> `10` -> `11` -> `12` -> `13` -> `14`.
 - `9[FigA]_umaps_mast.R` is one combined script that creates Figure A UMAP panels and writes MAST outputs used downstream.
 - `12_write_celltype_counts.R` is independent of scripts `6-11,13`; it mainly feeds script `14`.
 
