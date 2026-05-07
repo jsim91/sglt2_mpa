@@ -273,4 +273,4 @@ This document describes the canonical execution sequence for scripts in `primary
 ## Practical Notes
 
 - Run notebooks and R scripts from repo root for stable path resolution.
-- `9[FigA]_umaps_mast.R` uses an automatic cache for `intermediate/seurat/MM148_pbmc_seurat.rds` (build if missing, read if present).
+- `9[FigA]_umaps_mast.R` uses an automatic cache for `intermediate/seurat/MM148_pbmc_seurat.rds` (object only builds if file is missing, read if present). Prevents reconstruction of object if script is rerun.
