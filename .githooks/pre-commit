@@ -1,13 +1,12 @@
 #!/usr/bin/env sh
-# Block commits that contain credential patterns in notebook source cells.
-# Output stripping is handled at push time (see .githooks/pre-push).
+# Sanitize notebook secrets only. Outputs/figures are intentionally preserved.
 set -eu
 
 repo_root=$(git rev-parse --show-toplevel)
 cd "$repo_root"
 
 if command -v python >/dev/null 2>&1; then
-  python tools/sanitize_notebooks.py --check-credentials
+  python tools/sanitize_notebooks.py --sanitize-secrets-staged
 elif command -v py >/dev/null 2>&1; then
-  py -3 tools/sanitize_notebooks.py --check-credentials
+  py -3 tools/sanitize_notebooks.py --sanitize-secrets-staged
 fi
