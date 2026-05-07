@@ -39,7 +39,7 @@ Pipeline script documentation: [pipeline_docs/code_doc.md](pipeline_docs/code_do
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;From this integrated singlet branch, myeloid and platelet populations were identified by marker expression. Myeloid cells were re-integrated and re-clustered to define cMono (CD14+), nMono (CD16+), cDC1, cDC2, pDC, and an MPA cluster with concurrent monocyte and platelet signal.<br>
 
 #### RNASeq Doublet Analysis<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;To test whether MPAs were likely technical artifacts, we ran a parallel doublet-inclusive branch. Starting from the integrated singlet object, we added back Souporcell inter-sample doublets, re-integrated, and re-clustered myeloid/platelet populations.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;To test whether MPAs were likely technical artifacts, we ran a separate doublet-inclusive branch. This branch used the singlet integrated object as a reference for annotations, while retaining/reintroducing Souporcell-flagged inter-sample doublets for a separate re-integration and clustering analysis. This doublet-inclusive branch was used only to evaluate whether observed MPA-labeled cells localized with technical-doublet-enriched clusters; longitudinal MPA frequency estimates were derived from the singlet-filtered myeloid branch.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Within this branch, we quantified cluster-level singlet and Souporcell-doublet frequencies to compare observed MPAs directly against technical-doublet-enriched clusters, platelets, and other myeloid-lineage populations.<br>
 
 #### RNASeq Monocyte-Platelet Aggregate Simulation<br>
