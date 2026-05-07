@@ -103,6 +103,9 @@ cts_common <- cts[, common_genes, drop = FALSE]
 sim_cts_common <- sim_cts[, common_genes, drop = FALSE]
 sim_cts_common <- sim_cts_common[, common_genes, drop = FALSE]
 
+# ensure no cells in cts_common exist in sim_cts_common / tag line: duplicate, duplicated
+stopifnot(sum(obs_df$barcode_2 %in% sim_obs_df$barcode_2)==0) # passes
+
 cts_all <- rbind(cts_common, sim_cts_common)
 cts_all <- as(cts_all, "CsparseMatrix")
 
