@@ -241,29 +241,26 @@ myl_umap <- ggplot() +
 ggsave(filename = "pbmc_myeloid_doublet_umap_16APR2025.pdf", plot = myl_umap, device = "pdf", path = here::here("output/figures"), 
        width = 8, height = 8, units = "in", dpi = 300, limitsize = F, bg = "white")
 
-myeloid_obs <- read.csv(file = here::here("intermediate/pbmc/anndata_elements/adata_pbmc_obs_mpa_sim.csv"), check.names = FALSE)
-myeloid_umap <- read.csv(file = here::here("intermediate/pbmc/anndata_elements/pbmc_mpa_sim_umap_coordinates.csv"), 
-                         check.names = FALSE, header = FALSE, row.names = NULL)
-colnames(myeloid_umap) <- c("UMAP1","UMAP2")
-myeloid_umap$barcode <- myeloid_obs$barcode_2
+myeloid_obs_sim <- read.csv(file = here::here("intermediate/pbmc/anndata_elements/adata_pbmc_obs_mpa_sim.csv"), check.names = FALSE)
+myeloid_umap_sim <- read.csv(file = here::here("intermediate/pbmc/anndata_elements/pbmc_mpa_sim_umap_coordinates.csv"),
+                             check.names = FALSE, header = FALSE, row.names = NULL)
+colnames(myeloid_umap_sim) <- c("UMAP1","UMAP2")
 
-myeloid_map <- myeloid_obs$cell_type; names(myeloid_map) <- myeloid_obs$barcode_2
+myeloid_obs_sim$sim_celltype <- myeloid_obs_sim$merged_type
+myeloid_obs_sim$sim_celltype <- ifelse(myeloid_obs_sim$sim_celltype=="M-platelet", "MPA", myeloid_obs_sim$sim_celltype)
+myeloid_obs_sim$sim_celltype <- ifelse(myeloid_obs_sim$sim_celltype=="cMo_Platelet_doublet", "SimMPA", myeloid_obs_sim$sim_celltype)
+myeloid_obs_sim$sim_celltype <- ifelse(myeloid_obs_sim$sim_celltype=="CD14 Mono", "cMono", myeloid_obs_sim$sim_celltype)
+myeloid_obs_sim$sim_celltype <- ifelse(myeloid_obs_sim$sim_celltype=="CD16 Mono", "nMono", myeloid_obs_sim$sim_celltype)
 
-myeloid_umap$cluster <- myeloid_map[myeloid_umap$barcode]
-myeloid_umap$cluster[grep(pattern = "\\-dbl$", x = myeloid_umap$barcode)] <- "SimMPA"
-myeloid_umap$cluster <- factor(myeloid_umap$cluster)
+myeloid_umap_sim$cluster <- factor(myeloid_obs_sim$sim_celltype)
 
-myl_front <- myeloid_umap
-
-uclus <- unique(myl_front$cluster)
-
-set.seed(123); myl_front <- myl_front[sample(1:nrow(myl_front),nrow(myl_front),replace=F),]
-
+uclus <- unique(myeloid_umap_sim$cluster)
+# ensure shuffled for random draw order
+set.seed(123); myl_plot_df <- myeloid_umap_sim[sample(1:nrow(myeloid_umap_sim),nrow(myeloid_umap_sim),replace=F),]
 clusx <- rep(NA, length=length(uclus)); names(clusx) <- uclus; clusy <- clusx
-
 for(i in 1:length(uclus)) {
-  clusx[i] <- median(myl_front$UMAP1[myl_front$cluster==names(clusx)[i]])
-  clusy[i] <- median(myl_front$UMAP2[myl_front$cluster==names(clusy)[i]])
+  clusx[i] <- median(myl_plot_df$UMAP1[myl_plot_df$cluster==names(clusx)[i]])
+  clusy[i] <- median(myl_plot_df$UMAP2[myl_plot_df$cluster==names(clusy)[i]])
 }
 anno_df <- data.frame(xval = clusx, yval = clusy, lab = names(clusx)); anno_df$lab <- factor(anno_df$lab)
 
@@ -278,14 +275,13 @@ custom_col <- c('cMono' = '#FFB266',
                 'SimMPA' = '#d50000')
 
 myl_umap <- ggplot() + 
-  ggrastr::geom_point_rast(data = myl_front, aes(x = UMAP1, y = UMAP2, color = cluster, fill = cluster), alpha = 0.4) +
+  ggrastr::geom_point_rast(data = myl_plot_df, aes(x = UMAP1, y = UMAP2, color = cluster, fill = cluster), alpha = 0.4) +
   annotate("text", x = anno_df$xval, y = anno_df$yval, label = anno_df$lab,
            hjust = 0.5, color = "black", fontface = "bold", size = 9) +
   scale_color_manual(values = custom_col) + 
   scale_fill_manual(values = custom_col) + 
   theme_bw() + 
   theme(legend.text = element_text(size = 18, face = 'bold'), 
-        # legend.position = "bottom", 
         legend.position = 'none', 
         legend.title = element_blank(), 
         axis.text = element_blank(), 
