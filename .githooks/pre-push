@@ -1,0 +1,17 @@
+#!/usr/bin/env sh
+# Strip notebook outputs from commits before they reach the remote.
+# Local commits and working-tree notebooks retain their outputs.
+# Disable this hook to push with outputs intact.
+set -eu
+
+repo_root=$(git rev-parse --show-toplevel)
+cd "$repo_root"
+
+remote="$1"
+stdin_data=$(cat)
+
+if command -v python >/dev/null 2>&1; then
+  printf '%s' "$stdin_data" | python tools/sanitize_notebooks.py --pre-push "$remote"
+elif command -v py >/dev/null 2>&1; then
+  printf '%s' "$stdin_data" | py -3 tools/sanitize_notebooks.py --pre-push "$remote"
+fi
