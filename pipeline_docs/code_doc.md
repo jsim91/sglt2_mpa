@@ -5,8 +5,8 @@ This document describes the canonical execution sequence for scripts in `primary
 ## Start Here
 
 - Workflow entrypoint: run `primary_script/1_pre_detect_doublets.ipynb` first.
-- Primary sequence (single pass): `1` -> `2` -> `3` -> `4` -> `5` -> `6` -> `7` -> `8` -> `9_11` -> `10` -> `11` -> `13` -> `12` -> `14`.
-- `9_11[FigA]_umaps_mast.R` is one combined script that creates Figure A UMAP panels and writes MAST outputs used downstream.
+- Primary sequence (single pass): `1` -> `2` -> `3` -> `4` -> `5` -> `6` -> `7` -> `8` -> `9` -> `10` -> `11` -> `13` -> `12` -> `14`.
+- `9[FigA]_umaps_mast.R` is one combined script that creates Figure A UMAP panels and writes MAST outputs used downstream.
 - `12_write_celltype_counts.R` is independent of scripts `6-11,13`; it mainly feeds script `14`.
 
 ## Before Running
@@ -22,7 +22,7 @@ This document describes the canonical execution sequence for scripts in `primary
 - R scripts: run from repository root (or an R project rooted at repo root) so `here::here(...)` resolves correctly.
 - Suggested invocation style for R scripts:
   - `Rscript primary_script/2_pre_build_seurat.R`
-  - `Rscript primary_script/9_11[FigA]_umaps_mast.R`
+  - `Rscript primary_script/9[FigA]_umaps_mast.R`
 
 ## Scope And Conventions
 
@@ -163,7 +163,7 @@ This document describes the canonical execution sequence for scripts in `primary
 - Context:
   - Simulation branch to benchmark observed MPAs against controlled SimMPA profiles.
 
-### 9_11[FigA]_umaps_mast.R (Figure A + MAST Hand-offs)
+### 9[FigA]_umaps_mast.R (Figure A + MAST Hand-offs)
 
 - Purpose:
   - Generate three Figure A UMAP panels (singlet, doublet-inclusive, simulation) and run key MAST contrasts.
@@ -206,7 +206,7 @@ This document describes the canonical execution sequence for scripts in `primary
   - Run MAST DGE contrast of `MPA_real` vs `MPA_sim` with platelet-gene blacklist filtering.
 - Primary inputs:
   - Simulation anndata elements from script 8
-  - `intermediate/mast/platelet_genes/mast_platelet_gene_result.csv` from script 9_11
+  - `intermediate/mast/platelet_genes/mast_platelet_gene_result.csv` from script 9
   - `primary_dependents/seurat_dge_local.R`
 - Primary output:
   - `intermediate/mast/mpa_real_sim/pbmc_mpa_sim_real_no_platelet_genes_deg_6FEB2025.rds`
@@ -261,17 +261,17 @@ This document describes the canonical execution sequence for scripts in `primary
 - `1` -> `2`: SOLO scores.
 - `2` -> `3`: matrix/meta/gene exports.
 - `3` -> `4`: global PBMC AnnData.
-- `4` -> `5`: myeloid subset; `4` -> `8` platelet subset; `4` -> `9_11` platelet anndata elements.
-- `5` -> `6,7,8,9_11,12`: myeloid object and anndata elements.
+- `4` -> `5`: myeloid subset; `4` -> `8` platelet subset; `4` -> `9` platelet anndata elements.
+- `5` -> `6,7,8,9,12`: myeloid object and anndata elements.
 - `6` -> `7`: doublet-inclusive PBMC/myeloid objects.
-- `7` -> `9_11,10`: doublet-branch matrix/metadata exports.
-- `8` -> `9_11,10,11`: simulation matrix/metadata exports.
-- `9_11` -> `11,13`: MAST outputs and platelet blacklist.
+- `7` -> `9,10`: doublet-branch matrix/metadata exports.
+- `8` -> `9,10,11`: simulation matrix/metadata exports.
+- `9` -> `11,13`: MAST outputs and platelet blacklist.
 - `11` -> `13`: real-vs-sim MAST output.
 - `12` -> `14`: cell-type count table.
 
 ## Practical Notes
 
 - Run notebooks and R scripts from repo root for stable path resolution.
-- `9_11[FigA]_umaps_mast.R` uses an automatic cache for `intermediate/seurat/MM148_pbmc_seurat.rds` (build if missing, read if present).
+- `9[FigA]_umaps_mast.R` uses an automatic cache for `intermediate/seurat/MM148_pbmc_seurat.rds` (build if missing, read if present).
 - If upstream intermediate files already exist and you want a clean rerun, remove the relevant target outputs before re-execution.
