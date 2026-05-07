@@ -18,7 +18,7 @@ This document describes the canonical execution sequence for scripts in `primary
 
 - Notebooks: run from repository root so `REPO_ROOT` resolvers and relative paths work.
 - R scripts: run from repository root (or an R project rooted at repo root) so `here::here(...)` resolves correctly.
-- Suggested invocation style for R scripts:
+- Suggested invocation style for R scripts if run from the command line:
   - `Rscript primary_script/2_pre_build_seurat.R`
   - `Rscript primary_script/9[FigA]_umaps_mast.R`
 
@@ -44,12 +44,12 @@ This document describes the canonical execution sequence for scripts in `primary
 - Primary outputs:
   - `intermediate/solo_scores_MM1.csv` ... `intermediate/solo_scores_MM8.csv`
 - Context:
-  - Starts the end-to-end pipeline by generating barcode-level doublet scores used in prep and doublet-inclusive branches.
+  - Starts the end-to-end pipeline by generating barcode-level doublet scores used for intra-sample doublet filtering to supplement inter-sample Souporcell doublet filtering.
 
 ### 2_pre_build_seurat.R
 
 - Purpose:
-  - Build lane-level and merged Seurat objects, attach genotype/doublet metadata, apply QC, and export matrix/meta triplet.
+  - Build lane-level and merged Seurat objects, attach genotype/doublet metadata, apply QC, and export counts matrix,cell-level metadata, and count-aligned genes.
 - Primary inputs:
   - Cell Ranger matrices (`primary_dependents/cellranger_h5`)
   - Souporcell clusters (`primary_dependents/souporcell`)
@@ -66,7 +66,7 @@ This document describes the canonical execution sequence for scripts in `primary
 ### 3_pre_seurat_to_anndata.ipynb
 
 - Purpose:
-  - Convert Seurat exports to canonical PBMC AnnData.
+  - Convert Seurat exports to a PBMC AnnData scverse starter object.
 - Primary inputs:
   - `intermediate/seurat/RNA_assay_counts.mtx`
   - `intermediate/seurat/seurat_meta.csv`
@@ -169,7 +169,7 @@ This document describes the canonical execution sequence for scripts in `primary
   - Myeloid/platelet anndata elements from scripts 4 and 5
   - Doublet-branch exports from script 7
   - Simulation exports from script 8
-  - `primary_dependents/seurat_dge_local.R`
+  - Sourced `primary_dependents/seurat_dge_local.R`
 - Primary outputs (used downstream):
   - `intermediate/mast/pbmc_mpa_mono_sd/pbmc_mpa_mono_mast_deg_sd1sd3_15JAN2025.rds`
   - `intermediate/mast/platelet_genes/mast_platelet_gene_result.csv`
@@ -197,6 +197,7 @@ This document describes the canonical execution sequence for scripts in `primary
   - `output/figures/pbmc_myeloid_bubble.pdf`
 - Context:
   - Figure B visualization script.
+  - Dendrogram built from an unsupervised selection of genes passing expression filters post celltype aggregation.
 
 ### 11_test_mast_real_vs_sim.R
 
@@ -210,6 +211,7 @@ This document describes the canonical execution sequence for scripts in `primary
   - `intermediate/mast/mpa_real_sim/pbmc_mpa_sim_real_no_platelet_genes_deg_6FEB2025.rds`
 - Context:
   - Produces the real-vs-sim ranked contrast used by script 13.
+  - Platelet-enriched genes depleted to compare functional differences with minimal Platelet content influence.
 
 ### 12_write_celltype_counts.R
 
