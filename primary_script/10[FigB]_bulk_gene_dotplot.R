@@ -74,6 +74,26 @@ sing_obs_df$ann_types <- ifelse(sing_obs_df$ann_types == "CD14 Mono", "cMono", s
 sing_obs_df$ann_types <- ifelse(sing_obs_df$ann_types == "CD16 Mono", "nMono", sing_obs_df$ann_types)
 sing_obs_df$ann_types <- ifelse(sing_obs_df$ann_types == "M-platelet", "MPA", sing_obs_df$ann_types)
 
+# singlet platelet data (source of Platelet class)
+plt_cts <- Matrix::readMM(file.path(sim_dir, "adata_pbmc_platelet_counts.mtx"))
+plt_var_df <- read.csv(file.path(sim_dir, "adata_pbmc_platelet_var.csv"), row.names = 1)
+plt_obs_df <- read.csv(file.path(sim_dir, "adata_pbmc_platelet_obs.csv"))
+
+plt_gene_names <- get_gene_names(plt_var_df)
+if (length(plt_gene_names) != ncol(plt_cts)) {
+  stop("Platelet var_df gene names length does not match ncol(plt_cts).")
+}
+colnames(plt_cts) <- plt_gene_names
+plt_cts <- as(plt_cts, "CsparseMatrix")
+
+if (!("ann_types" %in% colnames(plt_obs_df))) {
+  if (!("merged_type" %in% colnames(plt_obs_df))) {
+    stop("Neither 'ann_types' nor 'merged_type' found in plt_obs_df.")
+  }
+  plt_obs_df$ann_types <- as.character(plt_obs_df$merged_type)
+}
+plt_obs_df$ann_types <- "Platelet"
+
 # doublet-inclusive data (retain only cell-level Souporcell doublets)
 dbl_cts <- Matrix::readMM(file.path(pbmc_dir, "pbmc_myeloid_platelet_dbl_counts.mtx"))
 dbl_var_df <- read.csv(file.path(pbmc_dir, "pbmc_myeloid_platelet_dbl_var.csv"), row.names = 1)
@@ -97,34 +117,42 @@ dbl_cts <- dbl_cts[dbl_keep, , drop = FALSE]
 dbl_obs_df <- dbl_obs_df[dbl_keep, , drop = FALSE]
 dbl_obs_df$ann_types <- "Doublet"
 
-# combine observed (singlet non-doublets + souporcell doublets)
-obs_common_genes <- intersect(colnames(sing_cts), colnames(dbl_cts))
+# combine observed (singlet non-doublets + singlet platelets + souporcell doublets)
+obs_common_genes <- Reduce(intersect, list(colnames(sing_cts), colnames(plt_cts), colnames(dbl_cts)))
 if (length(obs_common_genes) < 100L) {
-  stop("Too few intersecting genes between singlet and doublet inputs: ", length(obs_common_genes))
+  stop("Too few intersecting genes across singlet, platelet, and doublet inputs: ", length(obs_common_genes))
 }
 sing_cts <- sing_cts[, obs_common_genes, drop = FALSE]
+plt_cts <- plt_cts[, obs_common_genes, drop = FALSE]
 dbl_cts <- dbl_cts[, obs_common_genes, drop = FALSE]
 
-if (!("barcode_2" %in% colnames(sing_obs_df)) || !("barcode_2" %in% colnames(dbl_obs_df))) {
-  stop("'barcode_2' is required in both sing_obs_df and dbl_obs_df.")
+if (!("barcode_2" %in% colnames(sing_obs_df)) || !("barcode_2" %in% colnames(plt_obs_df)) || !("barcode_2" %in% colnames(dbl_obs_df))) {
+  stop("'barcode_2' is required in sing_obs_df, plt_obs_df, and dbl_obs_df.")
 }
 if (anyDuplicated(sing_obs_df$barcode_2) > 0L) {
   stop("Duplicate barcodes found within sing_obs_df.")
 }
+if (anyDuplicated(plt_obs_df$barcode_2) > 0L) {
+  stop("Duplicate barcodes found within plt_obs_df.")
+}
 if (anyDuplicated(dbl_obs_df$barcode_2) > 0L) {
   stop("Duplicate barcodes found within dbl_obs_df after Souporcell doublet filtering.")
 }
+stopifnot(sum(sing_obs_df$barcode_2 %in% plt_obs_df$barcode_2) == 0)
 stopifnot(sum(sing_obs_df$barcode_2 %in% dbl_obs_df$barcode_2) == 0)
+stopifnot(sum(plt_obs_df$barcode_2 %in% dbl_obs_df$barcode_2) == 0)
 
-cts <- rbind(sing_cts, dbl_cts)
+cts <- rbind(sing_cts, plt_cts, dbl_cts)
 cts <- as(cts, "CsparseMatrix")
 
-all_obs_cols_obs <- union(colnames(sing_obs_df), colnames(dbl_obs_df))
+all_obs_cols_obs <- Reduce(union, list(colnames(sing_obs_df), colnames(plt_obs_df), colnames(dbl_obs_df)))
 for (nm in setdiff(all_obs_cols_obs, colnames(sing_obs_df))) sing_obs_df[[nm]] <- NA
+for (nm in setdiff(all_obs_cols_obs, colnames(plt_obs_df))) plt_obs_df[[nm]] <- NA
 for (nm in setdiff(all_obs_cols_obs, colnames(dbl_obs_df))) dbl_obs_df[[nm]] <- NA
 sing_obs_df <- sing_obs_df[, all_obs_cols_obs, drop = FALSE]
+plt_obs_df <- plt_obs_df[, all_obs_cols_obs, drop = FALSE]
 dbl_obs_df <- dbl_obs_df[, all_obs_cols_obs, drop = FALSE]
-obs_df <- rbind(sing_obs_df, dbl_obs_df)
+obs_df <- rbind(sing_obs_df, plt_obs_df, dbl_obs_df)
 
 # simulation data
 # source of: c("SimMPA")
