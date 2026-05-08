@@ -184,7 +184,8 @@ custom_col <- c('cMono' = '#FFB266',
                 'pDC' = 'pink', 
                 'cDC1' = '#B266FF', 
                 'Platelet' = '#66FFFF', 
-                'doublet' = '#A9A9A9')
+                'doublet' = '#A9A9A9',
+                'SimMPA' = '#d50000')
 
 myl_umap <- ggplot() + 
   ggrastr::geom_point_rast(data = myeloid_umap, aes(x = UMAP1, y = UMAP2, color = cluster), alpha = 0.7) +
@@ -218,15 +219,6 @@ for(i in 1:length(uclus)) {
 }
 anno_df <- data.frame(xval = clusx, yval = clusy, lab = names(clusx)); anno_df$lab <- factor(anno_df$lab)
 anno_df$yval[anno_df$lab=="MPA"] <- 4.25
-
-custom_col <- c('cMono' = '#FFB266', 
-                'nMono' = '#FF6666', 
-                'MPA' = '#66FF66', 
-                'cDC2' = '#66B2FF', 
-                'pDC' = 'pink', 
-                'cDC1' = '#B266FF', 
-                'Platelet' = '#66FFFF', 
-                'doublet' = '#A9A9A9')
 
 myl_umap <- ggplot() + 
   ggrastr::geom_point_rast(data = myeloid_umap, aes(x = UMAP1, y = UMAP2, color = cluster), alpha = 0.7) +
@@ -263,16 +255,6 @@ for(i in 1:length(uclus)) {
   clusy[i] <- median(myl_plot_df$UMAP2[myl_plot_df$cluster==names(clusy)[i]])
 }
 anno_df <- data.frame(xval = clusx, yval = clusy, lab = names(clusx)); anno_df$lab <- factor(anno_df$lab)
-
-custom_col <- c('cMono' = '#FFB266', 
-                'nMono' = '#FF6666', 
-                'MPA' = '#66FF66', 
-                'cDC2' = '#66B2FF', 
-                'pDC' = 'pink', 
-                'cDC1' = '#B266FF', 
-                'Platelet' = '#66FFFF', 
-                'doublet' = '#A9A9A9',
-                'SimMPA' = '#d50000')
 
 myl_umap <- ggplot() + 
   ggrastr::geom_point_rast(data = myl_plot_df, aes(x = UMAP1, y = UMAP2, color = cluster, fill = cluster), alpha = 0.4) +

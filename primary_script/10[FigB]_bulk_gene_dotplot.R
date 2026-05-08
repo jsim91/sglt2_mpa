@@ -462,7 +462,7 @@ plot_cluster_dendrogram_fast <- function(
 custom_genes <- c(
   "PPBP", "CAVIN2", "CLU", "SPARC", "GP9", "PRKAR2B", "HIST1H2AC",
   "ARHGAP18", "TRIM58", "S100A9", "S100A8", "LYZ", "CD14",
-  "FCGR3A", "CLEC9A", "CLEC10A", "PLD4", "IRF4", "CD3E", "CD8A", "CD79A"
+  "FCGR3A", "CLEC9A", "CLEC10A", "PLD4", "IRF4", "CD3E", "CD79A"
 )
 
 result_custom <- plot_cluster_dendrogram_fast(
