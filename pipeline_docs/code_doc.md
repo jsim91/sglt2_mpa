@@ -187,17 +187,32 @@ This document describes the canonical execution sequence for scripts in `primary
 - Purpose:
   - Build the Figure B bulk-gene dotplot comparing observed myeloid/platelet states and SimMPA context.
 - Primary inputs:
-  - `intermediate/pbmc/pbmc_myeloid_platelet_dbl_counts.mtx`
+  - `intermediate/pbmc/anndata_elements/adata_pbmc_myeloid_counts.mtx` (singlet myeloid)
+  - `intermediate/pbmc/anndata_elements/adata_pbmc_myeloid_obs.csv`
+  - `intermediate/pbmc/anndata_elements/adata_pbmc_myeloid_var.csv`
+  - `intermediate/pbmc/anndata_elements/adata_pbmc_platelet_counts.mtx` (singlet platelet)
+  - `intermediate/pbmc/anndata_elements/adata_pbmc_platelet_obs.csv`
+  - `intermediate/pbmc/anndata_elements/adata_pbmc_platelet_var.csv`
+  - `intermediate/pbmc/pbmc_myeloid_platelet_dbl_counts.mtx` (doublet-inclusive; filtered to Souporcell doublets)
   - `intermediate/pbmc/pbmc_myeloid_platelet_dbl_obs.csv`
   - `intermediate/pbmc/pbmc_myeloid_platelet_dbl_var.csv`
-  - `intermediate/pbmc/anndata_elements/adata_pbmc_counts_mpa_sim.mtx`
+  - `intermediate/pbmc/anndata_elements/adata_pbmc_counts_mpa_sim.mtx` (simulation)
   - `intermediate/pbmc/anndata_elements/adata_pbmc_obs_mpa_sim.csv`
   - `intermediate/pbmc/anndata_elements/adata_pbmc_var_mpa_sim.csv`
 - Primary output:
   - `output/figures/pbmc_myeloid_bubble.pdf`
 - Context:
-  - Figure B visualization script.
-  - Dendrogram built from an unsupervised selection of genes passing expression filters post celltype aggregation.
+  - Figure B visualization script showing nine cell-type classes: cDC1, cDC2, cMono, Doublet, MPA, SimMPA, nMono, pDC, Platelet.
+  - Observed cells are sourced from three independent sets:
+    - Singlet myeloid triplet (cMono, nMono, MPA, cDC1, cDC2, pDC)
+    - Singlet platelet triplet (Platelet)
+    - Doublet-inclusive triplet filtered at the cell level to `souporcell_status == "doublet"` (Doublet)
+  - Simulated MPAs are read from the simulation triplet; both `MPA_sim` and `SimMPA` are accepted in `droplet_type` for compatibility with prior outputs.
+  - Cross-source barcode overlap is checked to prevent silent duplicate cells.
+  - Pseudobulk aggregation uses TMM normalisation followed by two separate voom passes:
+    - `E_corr` (filterByExpr-filtered): used for whole-transcriptome Pearson correlation and dendrogram.
+    - `E_plot` (unfiltered): used for marker dot-plot display so rare-group markers (e.g. `CLEC9A`) are never suppressed by expression filters.
+  - Dendrogram leaf positions are derived from `hclust` on `1 - cor_pearson`.
 
 ### 11_test_mast_real_vs_sim.R
 
@@ -261,8 +276,8 @@ This document describes the canonical execution sequence for scripts in `primary
 - `1` -> `2`: SOLO scores.
 - `2` -> `3`: matrix/meta/gene exports.
 - `3` -> `4`: global PBMC AnnData.
-- `4` -> `5`: myeloid subset; `4` -> `8` platelet subset; `4` -> `9` platelet anndata elements.
-- `5` -> `6,7,8,9,12`: myeloid object and anndata elements.
+- `4` -> `5,8,9,10`: myeloid subset; `4` -> `8,9,10` platelet subset and anndata elements (singlet platelet triplet used directly in script 10).
+- `5` -> `6,7,8,9,10,12`: myeloid object and anndata elements (singlet myeloid triplet used directly in script 10).
 - `6` -> `7`: doublet-inclusive PBMC/myeloid objects.
 - `7` -> `9,10`: doublet-branch matrix/metadata exports.
 - `8` -> `9,10,11`: simulation matrix/metadata exports.
