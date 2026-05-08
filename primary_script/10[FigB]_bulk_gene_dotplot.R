@@ -108,6 +108,12 @@ dbl_cts <- dbl_cts[, obs_common_genes, drop = FALSE]
 if (!("barcode_2" %in% colnames(sing_obs_df)) || !("barcode_2" %in% colnames(dbl_obs_df))) {
   stop("'barcode_2' is required in both sing_obs_df and dbl_obs_df.")
 }
+if (anyDuplicated(sing_obs_df$barcode_2) > 0L) {
+  stop("Duplicate barcodes found within sing_obs_df.")
+}
+if (anyDuplicated(dbl_obs_df$barcode_2) > 0L) {
+  stop("Duplicate barcodes found within dbl_obs_df after Souporcell doublet filtering.")
+}
 stopifnot(sum(sing_obs_df$barcode_2 %in% dbl_obs_df$barcode_2) == 0)
 
 cts <- rbind(sing_cts, dbl_cts)
@@ -145,6 +151,13 @@ if (!any(sim_keep)) {
 sim_cts <- sim_cts[sim_keep, , drop = FALSE]
 sim_obs_df <- sim_obs_df[sim_keep, , drop = FALSE]
 sim_obs_df$ann_types <- "SimMPA"
+
+if (!("barcode_2" %in% colnames(sim_obs_df))) {
+  stop("'barcode_2' not found in sim_obs_df.")
+}
+if (anyDuplicated(sim_obs_df$barcode_2) > 0L) {
+  stop("Duplicate barcodes found within sim_obs_df after MPA_sim filtering.")
+}
 
 # keep common genes; concatenate observed + sim data
 common_genes <- intersect(colnames(cts), colnames(sim_cts))
