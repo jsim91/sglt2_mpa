@@ -210,17 +210,22 @@ print(Matrix::colSums(X))
 dge <- DGEList(counts = pb_counts)
 dge <- calcNormFactors(dge, method = "TMM")
 
+# unfiltered voom matrix for plotting (allows marker display even if filtered for correlation)
+design_voom <- matrix(1, ncol(dge), 1)
+v_plot <- voom(dge, design = design_voom, plot = FALSE)
+E_plot <- v_plot$E  # genes x clusters (unfiltered)
+
 design0 <- matrix(1, ncol(pb_counts), 1)
 # relax threshold for filtering
 keep_genes <- filterByExpr(dge, design = design0, min.count = 1)
-dge <- dge[keep_genes, , keep.lib.sizes = FALSE]
+dge_corr <- dge[keep_genes, , keep.lib.sizes = FALSE]
 
-design_voom <- matrix(1, ncol(dge), 1)
-v <- voom(dge, design = design_voom, plot = FALSE)
-E <- v$E  # genes x clusters
+# filtered voom matrix for correlation/dendrogram
+v_corr <- voom(dge_corr, design = design_voom, plot = FALSE)
+E_corr <- v_corr$E  # genes x clusters (filtered)
 
 # whole transcriptome-informed correlation
-cor_pearson <- cor(E, method = "pearson")
+cor_pearson <- cor(E_corr, method = "pearson")
 
 # dotplot; dendrogram calculated from cor_pearson
 plot_cluster_dendrogram_fast <- function(
@@ -434,7 +439,7 @@ custom_genes <- c(
 result_custom <- plot_cluster_dendrogram_fast(
   cts_use = cts_use,
   cell_meta = obs_use,
-  E = E, 
+  E = E_plot,
   cor_pearson = cor_pearson,
   cluster_col = "ann_types",
   gene_list = custom_genes
