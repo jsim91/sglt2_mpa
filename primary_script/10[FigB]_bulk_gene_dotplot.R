@@ -52,23 +52,76 @@ get_gene_names <- function(df) {
   as.character(df[[1L]])
 }
 
-# singlet data
-cts <- Matrix::readMM(file.path(pbmc_dir, "pbmc_myeloid_platelet_dbl_counts.mtx"))
-var_df <- read.csv(file.path(pbmc_dir, "pbmc_myeloid_platelet_dbl_var.csv"), row.names = 1)
-obs_df <- read.csv(file.path(pbmc_dir, "pbmc_myeloid_platelet_dbl_obs.csv"))
+# singlet data (source of non-doublet classes)
+sing_cts <- Matrix::readMM(file.path(sim_dir, "adata_pbmc_myeloid_counts.mtx"))
+sing_var_df <- read.csv(file.path(sim_dir, "adata_pbmc_myeloid_var.csv"), row.names = 1)
+sing_obs_df <- read.csv(file.path(sim_dir, "adata_pbmc_myeloid_obs.csv"))
 
-orig_gene_names <- get_gene_names(var_df)
-if (length(orig_gene_names) != ncol(cts)) {
-  stop("Original var_df gene names length does not match ncol(cts).")
+sing_gene_names <- get_gene_names(sing_var_df)
+if (length(sing_gene_names) != ncol(sing_cts)) {
+  stop("Singlet var_df gene names length does not match ncol(sing_cts).")
 }
-colnames(cts) <- orig_gene_names
+colnames(sing_cts) <- sing_gene_names
+sing_cts <- as(sing_cts, "CsparseMatrix")
+
+if (!("ann_types" %in% colnames(sing_obs_df))) {
+  if (!("merged_type" %in% colnames(sing_obs_df))) {
+    stop("Neither 'ann_types' nor 'merged_type' found in sing_obs_df.")
+  }
+  sing_obs_df$ann_types <- as.character(sing_obs_df$merged_type)
+}
+sing_obs_df$ann_types <- ifelse(sing_obs_df$ann_types == "CD14 Mono", "cMono", sing_obs_df$ann_types)
+sing_obs_df$ann_types <- ifelse(sing_obs_df$ann_types == "CD16 Mono", "nMono", sing_obs_df$ann_types)
+sing_obs_df$ann_types <- ifelse(sing_obs_df$ann_types == "M-platelet", "MPA", sing_obs_df$ann_types)
+
+# doublet-inclusive data (retain only cell-level Souporcell doublets)
+dbl_cts <- Matrix::readMM(file.path(pbmc_dir, "pbmc_myeloid_platelet_dbl_counts.mtx"))
+dbl_var_df <- read.csv(file.path(pbmc_dir, "pbmc_myeloid_platelet_dbl_var.csv"), row.names = 1)
+dbl_obs_df <- read.csv(file.path(pbmc_dir, "pbmc_myeloid_platelet_dbl_obs.csv"))
+
+dbl_gene_names <- get_gene_names(dbl_var_df)
+if (length(dbl_gene_names) != ncol(dbl_cts)) {
+  stop("Doublet var_df gene names length does not match ncol(dbl_cts).")
+}
+colnames(dbl_cts) <- dbl_gene_names
+dbl_cts <- as(dbl_cts, "CsparseMatrix")
+
+if (!("souporcell_status" %in% colnames(dbl_obs_df))) {
+  stop("'souporcell_status' not found in dbl_obs_df.")
+}
+dbl_keep <- !is.na(dbl_obs_df$souporcell_status) & dbl_obs_df$souporcell_status == "doublet"
+if (!any(dbl_keep)) {
+  stop("No rows found with souporcell_status == 'doublet' in dbl_obs_df.")
+}
+dbl_cts <- dbl_cts[dbl_keep, , drop = FALSE]
+dbl_obs_df <- dbl_obs_df[dbl_keep, , drop = FALSE]
+dbl_obs_df$ann_types <- "Doublet"
+
+# combine observed (singlet non-doublets + souporcell doublets)
+obs_common_genes <- intersect(colnames(sing_cts), colnames(dbl_cts))
+if (length(obs_common_genes) < 100L) {
+  stop("Too few intersecting genes between singlet and doublet inputs: ", length(obs_common_genes))
+}
+sing_cts <- sing_cts[, obs_common_genes, drop = FALSE]
+dbl_cts <- dbl_cts[, obs_common_genes, drop = FALSE]
+
+if (!("barcode_2" %in% colnames(sing_obs_df)) || !("barcode_2" %in% colnames(dbl_obs_df))) {
+  stop("'barcode_2' is required in both sing_obs_df and dbl_obs_df.")
+}
+stopifnot(sum(sing_obs_df$barcode_2 %in% dbl_obs_df$barcode_2) == 0)
+
+cts <- rbind(sing_cts, dbl_cts)
 cts <- as(cts, "CsparseMatrix")
 
-if (!("ann_types" %in% colnames(obs_df))) {
-  stop("'ann_types' not found in obs_df.")
-}
+all_obs_cols_obs <- union(colnames(sing_obs_df), colnames(dbl_obs_df))
+for (nm in setdiff(all_obs_cols_obs, colnames(sing_obs_df))) sing_obs_df[[nm]] <- NA
+for (nm in setdiff(all_obs_cols_obs, colnames(dbl_obs_df))) dbl_obs_df[[nm]] <- NA
+sing_obs_df <- sing_obs_df[, all_obs_cols_obs, drop = FALSE]
+dbl_obs_df <- dbl_obs_df[, all_obs_cols_obs, drop = FALSE]
+obs_df <- rbind(sing_obs_df, dbl_obs_df)
 
-# sim data
+# simulation data
+# source of: c("SimMPA")
 sim_cts <- Matrix::readMM(file.path(sim_dir, "adata_pbmc_counts_mpa_sim.mtx"))
 sim_var_df <- read.csv(file.path(sim_dir, "adata_pbmc_var_mpa_sim.csv"))
 sim_obs_df <- read.csv(file.path(sim_dir, "adata_pbmc_obs_mpa_sim.csv"))
@@ -93,7 +146,7 @@ sim_cts <- sim_cts[sim_keep, , drop = FALSE]
 sim_obs_df <- sim_obs_df[sim_keep, , drop = FALSE]
 sim_obs_df$ann_types <- "SimMPA"
 
-# keep common genes; concatenate data
+# keep common genes; concatenate observed + sim data
 common_genes <- intersect(colnames(cts), colnames(sim_cts))
 if (length(common_genes) < 100L) {
   stop("Too few intersecting genes: ", length(common_genes))
