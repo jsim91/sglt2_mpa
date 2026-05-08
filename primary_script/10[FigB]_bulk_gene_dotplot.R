@@ -171,13 +171,14 @@ if (!("droplet_type" %in% colnames(sim_obs_df))) {
   stop("'droplet_type' not found in sim_obs_df.")
 }
 
-# keep only MPA_sim from sim data and rename simMPA
-sim_keep <- !is.na(sim_obs_df$droplet_type) & sim_obs_df$droplet_type == "MPA_sim"
+# keep either historical or current sim label from sim data and standardize to SimMPA for plotting
+sim_keep <- !is.na(sim_obs_df$droplet_type) & sim_obs_df$droplet_type %in% c("MPA_sim", "SimMPA")
 if (!any(sim_keep)) {
-  stop("No rows found with droplet_type == 'MPA_sim'.")
+  stop("No rows found with droplet_type in c('MPA_sim', 'SimMPA').")
 }
 sim_cts <- sim_cts[sim_keep, , drop = FALSE]
 sim_obs_df <- sim_obs_df[sim_keep, , drop = FALSE]
+sim_obs_df$droplet_type <- ifelse(sim_obs_df$droplet_type == "MPA_sim", "SimMPA", sim_obs_df$droplet_type)
 sim_obs_df$ann_types <- "SimMPA"
 
 if (!("barcode_2" %in% colnames(sim_obs_df))) {

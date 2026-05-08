@@ -18,6 +18,11 @@ seu <- Seurat::CreateSeuratObject(counts = ct, assay = "RNA", meta.data = obs)
 head(seu@assays$RNA@layers$counts@x,20) # should be ints
 seu <- Seurat::NormalizeData(object = seu, assay = "RNA", normalization.method = "LogNormalize")
 
+if (!("droplet_type" %in% colnames(seu@meta.data))) {
+    stop("'droplet_type' not found in simulation metadata.")
+}
+seu$droplet_type <- ifelse(seu$droplet_type == "SimMPA", "MPA_sim", seu$droplet_type)
+
 Idents(seu) <- seu$cell_type
 
 mast_platelet_gene <- read.csv(file = here::here("intermediate/mast/platelet_genes/mast_platelet_gene_result.csv"))
