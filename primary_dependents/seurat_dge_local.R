@@ -1,5 +1,6 @@
 # Local copy of core DGE helper from jsim91/seutools (seurat_in.R).
 # Sourced locally to avoid requiring seutools:: namespace for this manuscript workflow.
+# Companion guide: see pipeline_docs/seurat_dge_companion.md for function behavior and repo-specific usage.
 
 seurat_dge <- function(seurat_object,
                        dge_method = c("mast", "wilcox", "pseudobulk"),
@@ -23,20 +24,6 @@ seurat_dge <- function(seurat_object,
   suppressPackageStartupMessages({
     require(Seurat)
   })
-  # seurat_object = seu_small_subset
-  # dge_method = "mast"
-  # assay = "RNA"
-  # freq_expressed = 0.6
-  # fc_threshold = log2(1.5)
-  # test_clusters = "custom_cluster"
-  # cluster_column = "cluster_custom"
-  # category_column = "cell_type"
-  # test_categories = c("ISG_Mono","Mono")
-  # test_condition = "custom_compare"
-  # condition_column = "condition_custom"
-  # pid_column = "pid"
-  # pseudobulk_test_mode = "cluster_by_category"
-  # filter_genes = "outer"
 
   if(all(!is.null(test_categories), pseudobulk_test_mode!="cluster_by_category")) {
     stop("'test_categories' should be set to NULL when 'pseudobulk_test_mode' is not set to 'cluster_by_category'")
@@ -92,9 +79,7 @@ seurat_dge <- function(seurat_object,
     require(data.table)
     require(DESeq2)
     require(ashr)
-    # if(length(test_cats)!=2) {
-    #   stop("Test_categories must be length 2 when doing pseudobulk. If testing cluster vs rest, do c('in','out') mapped to what cluster is being tested. If testing ")
-    # }
+    
     if(pseudobulk_test_mode!='cluster_identity') {
       seurat_object <- subset(seurat_object, cells = which(seurat_object@meta.data[,category_column] %in% test_cats))
     }
@@ -141,7 +126,6 @@ seurat_dge <- function(seurat_object,
       names(ct_spl) <- gsub("( |\\-|\\/)","_",unique(seurat_object@meta.data[,cluster_column]))
       meta_list <- vector("list", length = length(ct_spl)); names(meta_list) <- names(ct_spl)
       for(i in 1:length(ct_spl)) {
-        ##
         ct_spl[[i]] <- as.data.frame(data.table::fread(paste0(capture_dir,"/temp_files/__pseudobulk_sum_counts_", names(ct_spl)[i], "__.csv"), check.names = FALSE, header = FALSE))
         if(file.exists(paste0(capture_dir,"/temp_files/__pseudobulk_sum_counts_", names(ct_spl)[i], "__.csv"))) {
           file.remove(paste0(capture_dir,"/temp_files/__pseudobulk_sum_counts_", names(ct_spl)[i], "__.csv"))
@@ -192,30 +176,10 @@ seurat_dge <- function(seurat_object,
       }
       row.names(ct_data) <- obj_obs$cell_group
       colnames(ct_data) <- obj_var
-      ##
+
       id_pattern <- paste0(gsub("-","\\\\-",paste0("(",paste0(unique(seurat_object@meta.data[,pid_column]), collapse = "|"),")")),"_")
-      # ct_spl <- split(x = ct_data, f = gsub(id_pattern,"",row.names(ct_data)))
       ct_spl <- split(x = ct_data, f = obj_obs[,cluster_column])
-      # ct_spl <- lapply(X = ct_spl, FUN = drop_novar)
       ct_spl <- lapply(X = ct_spl, FUN = drop_novar2)
-      # meta_spl <- split(x = obj_obs, f = obj_obs[,cluster_column])
-      #meta_list <- vector("list", length = length(ct_spl)); names(meta_list) <- names(ct_spl)
-      #for(i in 1:length(meta_list)) {
-      #  tmp_meta <- obj_obs
-      # tmp_meta <- tmp_meta[which(tmp_meta[,pid_column] %in% colnames(ct_spl[[i]])),]
-      # tmp_meta <- tmp_meta[which(gsub(id_pattern,"",row.names(obj_obs)) %in% names(ct_spl)[i]),]
-      # if(mean(tmp_meta[,pid_column]==colnames(ct_spl[[i]]))!=1) {
-      # tmp_meta <- tmp_meta[which(tmp_meta[,"cell_group"] %in% colnames(ct_spl[[i]])),]
-      #  tmp_meta <- tmp_meta[which(tmp_meta[,category_column]==names(ct_spl)[i]),]
-      #  if(mean(row.names(tmp_meta)==colnames(ct_spl[[i]]))!=1) {
-      #    stop("pid mismatch (1)")
-      #  }
-      #  tmp_meta$cluster_id <- names(meta_list)[i]
-      #  tmp_meta$sample_id <- tmp_meta[,pid_column]
-      #  tmp_meta$group_id <- factor(tmp_meta[,category_column], levels = test_categories)
-      # row.names(tmp_meta) <- tmp_meta$sample_id
-      #  meta_list[[i]] <- tmp_meta
-      #}
       obj_obs$cluster_id <- obj_obs[,cluster_column]
       obj_obs$sample_id <- obj_obs[,pid_column]
       obj_obs$group_id <- factor(obj_obs[,category_column], levels = test_categories)
@@ -227,17 +191,10 @@ seurat_dge <- function(seurat_object,
       deseq_input[[i]] <- list(ct_spl[[i]], meta_list[[i]])
     }
 
-    # return(deseq_input) # check input is correct for "identity" testing
-
     use_adj_p <- TRUE # hard coding use adjusted p values; consider allowing use unadjusted for discovery
     padj_threshold <- 0.05 # hard coding 0.05; consider allowing to change
     do_deseq <- function(arg1, p_return_threshold = padj_threshold, stim = seu_conditions,
                          use_adj = use_adj_p) {
-      # testing
-      # arg1 <- deseq_input[[1]]
-      # p_return_threshold = padj_threshold
-      # stim = seu_conditions
-      # use_adj = use_adj_p
 
       count_data <- arg1[[1]]
       meta_data <- arg1[[2]]
@@ -675,53 +632,6 @@ seurat_dge <- function(seurat_object,
             zlm_res      = zlmCond
           )
         }
-        ##### plotting stuff from mast; leaving for now; ggbase+geom_violin() may be particularly useful
-        # entrez_to_plot <- fcHurdleSig[,primerid]
-        # flat_dat <- as(my_sca[entrez_to_plot,], 'data.table')
-        # ggbase <- ggplot(flat_dat, aes(x=category, y=logcounts, color=category)) + geom_jitter() + facet_wrap(~primerid, scale='free_y')+ggtitle("DE Genes")
-        # ggbase+geom_violin()
-        #
-        # flat_dat[,lmPred:=lm(logcounts~cngeneson + category)$fitted, key=primerid]
-        # ggbase + aes(x=cngeneson) + geom_line(aes(y=lmPred), lty=1) + xlab('Standardized Cellular Detection Rate')
-        #
-        # MM <- model.matrix(~category,unique(colData(my_sca)[,c("category"),drop=FALSE]))
-        # rname_map <- colData(my_sca)$category; names(rname_map) <- colData(my_sca)$barcode
-        # rownames(MM) <- rname_map[row.names(MM)]
-        # predicted <- predict(zlmCond,modelmatrix=MM)
-        #
-        # predicted[, primerid:=as.character(primerid)]
-        # predicted_sig <- merge(mcols(my_sca), predicted[primerid%in%entrez_to_plot], by='primerid')
-        # predicted_sig <- as.data.table(predicted_sig)
-        #
-        # ggplot(predicted_sig)+aes(x=invlogit(etaD),y=muC,xse=seD,yse=seC,col=sample)+
-        #   facet_wrap(~primerid,scales="free_y")+theme_linedraw()+
-        #   geom_point(size=0.5)+scale_x_continuous("Proportion expression")+
-        #   scale_y_continuous("Estimated Mean")+
-        #   stat_ell(aes(x=etaD,y=muC),level=0.95, invert='x')
-        #
-        # # heatmap, exprs per cell, split by group
-        # mat_to_plot <- assay(my_sca[entrez_to_plot,])
-        # symbols_to_plot <- fcHurdleSig[,primerid]
-        # rownames(mat_to_plot) <- symbols_to_plot
-        # assay_as_matrix <- as.matrix(mat_to_plot)
-        # NMF::aheatmap(assay_as_matrix,annCol=colData(my_sca)[,"category"],main="DE genes",
-        #               col=rev(colorRampPalette(colors = RColorBrewer::brewer.pal(name="PiYG",n=10))(20)), labCol = NA)
-        #
-        # # gsea
-        # boots <- bootVcov1(zlmCond, R = 50)
-        # module <- "BTM"
-        # min_gene_in_module <- 5
-        # packageExt <- system.file("extdata", package='MAST')
-        # module_file <- list.files(packageExt, pattern = module, full.names = TRUE)
-        # gene_set <- getGmt(module_file)
-        # gene_ids <- geneIds(gene_set)
-        # gene_ids <- gene_ids[!names(gene_ids)%like%"TBA"&!names(gene_ids)%like%"B cell"]
-        # sets_indices <- limma::ids2indices(gene_ids, mcols(sca)$symbolid)
-        # # Only keep modules with at least min_gene_in_module
-        # sets_indices <- sets_indices[sapply(sets_indices, length) >= min_gene_in_module]
-        # gsea <- gseaAfterBoot(zlmCond, boots, sets_indices, CoefficientHypothesis("conditionStim"))
-        # z_stat_comb <- summary(gsea, testType='normal')
-        #####
       } else if(tolower(dge_method) == "wilcox") {
         suppressPackageStartupMessages({
           require(SeuratWrappers)
