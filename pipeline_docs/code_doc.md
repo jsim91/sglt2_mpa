@@ -289,3 +289,5 @@ This document describes the canonical execution sequence for scripts in `primary
 
 - Run notebooks and R scripts from repo root for stable path resolution.
 - `9[FigA]_umaps_mast.R` uses an automatic cache for `intermediate/seurat/MM148_pbmc_seurat.rds` (object only builds if file is missing, read if present). Prevents reconstruction of object if script is rerun.
+- Some upstream steps are stochastic (for example, SOLO/scVI model fitting, neighborhood graph construction, Leiden clustering, and UMAP layout). Even with fixed seeds, reruns across environments or hardware may not produce numerically identical embeddings.
+- Reproducibility should therefore be assessed by stability of high-level cell-state structure and downstream contrast-level conclusions, not by exact coordinate-level identity of UMAP points.
