@@ -87,7 +87,7 @@ Columns commonly used downstream include:
 ## Scripts that source the helper
 
 - `primary_script/9[FigA]_umaps_mast.R`
-- `primary_script/11_test_mast_real_vs_sim.R`
+- `primary_script/11_mast_real_vs_sim.R`
 
 ## Script 9 usage
 

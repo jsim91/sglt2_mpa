@@ -214,7 +214,7 @@ This document describes the canonical execution sequence for scripts in `primary
     - `E_plot` (unfiltered): used for marker dot-plot display so rare-group markers (e.g. `CLEC9A`) are never suppressed by expression filters.
   - Dendrogram leaf positions are derived from `hclust` on `1 - cor_pearson`.
 
-### 11_test_mast_real_vs_sim.R
+### 11_mast_real_vs_sim.R
 
 - Purpose:
   - Run MAST DGE contrast of `MPA_real` vs `MPA_sim` with platelet-gene blacklist filtering.
