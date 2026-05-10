@@ -5,7 +5,7 @@ This document describes the canonical execution sequence for scripts in `primary
 ## Start Here
 
 - Workflow entrypoint: run `primary_script/1_pre_detect_doublets.ipynb` first.
-- Primary sequence (single pass): `1` -> `2` -> `3` -> `4` -> `5` -> `6` -> `7` -> `8` -> `9` -> `10` -> `11` -> `12` -> `13` -> `14`.
+- Primary sequence (single pass): `1` -> `2` -> `3` -> `4` -> `5` -> `6` -> `7` -> `8` -> `9` -> `10` -> `11` -> `12` -> `13` -> `14` -> `15`.
 
 ## Before Running
 
@@ -271,6 +271,21 @@ This document describes the canonical execution sequence for scripts in `primary
 - Context:
   - Final composition-style visualization panel linked to manuscript Figure E.
 
+### 15_bayesian_compositional_analysis.R
+
+- Purpose:
+  - Run Bayesian differential composition analysis on myeloid cell-type frequencies using sccomp, including a sensitivity analysis with platelet-modifying drug use as a covariate.
+- Primary inputs:
+  - `primary_dependents/pbmc2data.rds` (cell-type count data frame with subject_id, study_day, cell_type, count; derived from script 12 output)
+  - `primary_dependents/pbmc2mod.rds` (pre-fitted sccomp model, no drug covariate)
+  - `primary_dependents/pbmc2modc.rds` (pre-fitted sccomp model, drug covariate sensitivity analysis)
+- Primary outputs:
+  - Printed results to console: logit fold-change tables and posterior proportion-change summaries for 2-week and 12-week vs baseline contrasts.
+- Context:
+  - The MCMC model fitting steps (`sccomp_estimate` calls) are pre-computed and stored in `primary_dependents/`; this script runs `sccomp_test` and `sccomp_predict` on those saved fits.
+  - Produces both the primary model results and the platelet-modifying drug sensitivity analysis described in the Methods.
+  - Run from repository root so bare relative paths (`primary_dependents/...`) resolve correctly.
+
 ## Dependency Handoff (Primary Sequence)
 
 - `1` -> `2`: SOLO scores.
@@ -283,7 +298,7 @@ This document describes the canonical execution sequence for scripts in `primary
 - `8` -> `9,10,11`: simulation matrix/metadata exports.
 - `9` -> `11,13`: MAST outputs and platelet blacklist.
 - `11` -> `13`: real-vs-sim MAST output.
-- `12` -> `14`: cell-type count table.
+- `12` -> `14,15`: cell-type count table (script 14 for visualization; script 15 uses `pbmc2data.rds` derived from the same source).
 
 ## Practical Notes
 
