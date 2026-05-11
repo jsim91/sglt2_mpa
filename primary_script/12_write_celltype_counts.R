@@ -39,3 +39,12 @@ for(i in 1:nrow(fmat)) {
   }
 }
 write.csv(x = fmat, file = here::here("intermediate/pbmc/anndata_elements/mm_myeloid_named_cluster_cell_counts.csv"))
+
+myeloid_types <- c('CD14 Mono','CD16 Mono','cDC1','cDC2','M-platelet','pDC')
+myeloid_counts <- cbind(data.frame(subject_id = stringr::str_extract(row.names(fmat), '^.+\\-[0-9]+'), 
+                                   study_day = stringr::str_extract(row.names(fmat), '[1-3]$')), 
+                        fmat[,colnames(fmat) %in% myeloid_types])
+mydf <- reshape2::melt(data = myeloid_counts)[,c('subject_id','study_day','value','variable')]
+colnames(mydf) <- c('subject_id','study_day','count','cell_type')
+mydf$cell_type <- gsub('\\ |\\-', '.', mydf$cell_type)
+saveRDS(object = mydf, file = here::here("intermediate/sccomp/pbmc2data.rds"))

@@ -231,17 +231,19 @@ This document describes the canonical execution sequence for scripts in `primary
 ### 12_write_celltype_counts.R
 
 - Purpose:
-  - Write myeloid cell-type count table by participant/timepoint for frequency plotting.
+  - Write myeloid cell-type count tables by participant/timepoint for downstream frequency plotting and Bayesian compositional modeling.
 - Primary inputs:
   - `intermediate/pbmc/anndata_elements/adata_pbmc_myeloid_counts.mtx`
   - `intermediate/pbmc/anndata_elements/adata_pbmc_myeloid_obs.csv`
   - `intermediate/pbmc/anndata_elements/adata_pbmc_myeloid_var.csv`
   - `intermediate/pbmc/anndata_elements/adata_pbmc_myeloid_umap_coordinates.csv`
   - `intermediate/pbmc/anndata_elements/adata_pbmc_myeloid_latent_coordinates.csv`
-- Primary output (downstream-relevant):
+- Primary outputs (downstream-relevant):
   - `intermediate/pbmc/anndata_elements/mm_myeloid_named_cluster_cell_counts.csv`
+  - `intermediate/sccomp/pbmc2data.rds`
 - Context:
   - Supports Figure E frequency plotting in script 14.
+  - Creates sccomp-ready long-format composition input (subject_id, study_day, count, cell_type) for script 15.
 
 ### 13[FigC_H_I]_plot_fgsea.R (Figure C, H, I)
 
@@ -276,15 +278,16 @@ This document describes the canonical execution sequence for scripts in `primary
 - Purpose:
   - Run Bayesian differential composition analysis on myeloid cell-type frequencies using sccomp, including a sensitivity analysis with platelet-modifying drug use as a covariate.
 - Primary inputs:
-  - `primary_dependents/pbmc2data.rds` (cell-type count data frame with subject_id, study_day, cell_type, count; derived from script 12 output)
-  - `primary_dependents/pbmc2mod.rds` (pre-fitted sccomp model, no drug covariate)
-  - `primary_dependents/pbmc2modc.rds` (pre-fitted sccomp model, drug covariate sensitivity analysis)
+  - `intermediate/sccomp/pbmc2data.rds` (cell-type count data frame with subject_id, study_day, cell_type, count from script 12)
 - Primary outputs:
+  - `intermediate/sccomp/pbmc2mod.rds` (sccomp fit without drug covariate)
+  - `intermediate/sccomp/pbmc2modc.rds` (sccomp fit with drug covariate)
   - Printed results to console: logit fold-change tables and posterior proportion-change summaries for 2-week and 12-week vs baseline contrasts.
 - Context:
-  - The MCMC model fitting steps (`sccomp_estimate` calls) are pre-computed and stored in `primary_dependents/`; this script runs `sccomp_test` and `sccomp_predict` on those saved fits.
-  - Produces both the primary model results and the platelet-modifying drug sensitivity analysis described in the Methods.
-  - Run from repository root so bare relative paths (`primary_dependents/...`) resolve correctly.
+  - Fits two sccomp models directly from script-12 outputs via `sccomp_estimate`: primary model (`~ time + (1|subject_id)`) and sensitivity model (`~ time + drug + (1|subject_id)`).
+  - Keeps sccomp-related inputs, fitted outputs, and temporary random-draw folders consolidated under `intermediate/sccomp/`; temporary draw folders are removed at script end to prevent accumulation.
+  - Produces estimates supporting manuscript statements about reduced MPA proportion from baseline to 2 weeks and 12 weeks, including covariate-adjusted sensitivity.
+  - Run from repository root so `here::here(...)` resolves consistently.
 
 ## Dependency Handoff (Primary Sequence)
 
@@ -298,7 +301,7 @@ This document describes the canonical execution sequence for scripts in `primary
 - `8` -> `9,10,11`: simulation matrix/metadata exports.
 - `9` -> `11,13`: MAST outputs and platelet blacklist.
 - `11` -> `13`: real-vs-sim MAST output.
-- `12` -> `14,15`: cell-type count table (script 14 for visualization; script 15 uses `pbmc2data.rds` derived from the same source).
+- `12` -> `14,15`: script 12 writes `mm_myeloid_named_cluster_cell_counts.csv` for script 14 and `pbmc2data.rds` for script 15.
 
 ## Practical Notes
 
