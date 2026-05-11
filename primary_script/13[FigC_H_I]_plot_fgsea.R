@@ -73,8 +73,6 @@ sim_dble_wo_plt_rank <- mast_sim_dblts_without_platelet_genes_deg %>%
 
 # Hallmark
 gene_set <- GSEABase::getGmt(here::here("primary_dependents/gene_set/H_Hallmark_modules_gsea.gmt"))
-
-# where .gmt file can be any gmt file; for other msigdb gmt files, see: https://github.com/jsim91/seutools/tree/master/inst/extdata
 gene_ids <- GSEABase::geneIds(gene_set)
 
 # ----Set seed----
