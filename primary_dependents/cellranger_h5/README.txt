@@ -11,3 +11,4 @@ Expected layout:
 - 10872-MM-8/filtered_feature_bc_matrix.h5
 
 These files are intentionally not distributed in the public repo.
+They are available via Zenodo: [link to be provided after publication; currently private]
