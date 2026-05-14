@@ -1,0 +1,74 @@
+name: sglt2_mpa
+channels:
+  - conda-forge
+  - bioconda
+  - nvidia
+  - pytorch
+  - defaults
+
+dependencies:
+  # Core runtimes
+  - python=3.9
+  - r-base=4.3.*
+  - pip
+
+  # Python stack used by the notebooks
+  - numpy
+  - pandas
+  - scipy
+  - matplotlib
+  - pytorch
+  - pytorch-cuda=12.1
+
+  # R stack used by the primary scripts
+  - r-here
+  - r-matrix
+  - r-seurat
+  - r-ggplot2
+  - r-data.table
+  - r-tidyverse
+  - r-pheatmap
+  - r-cowplot
+  - r-tidytext
+  - r-conflicted
+  - r-hmisc
+  - r-knitr
+  - r-tables
+  - r-htmltable
+  - r-ggiraph
+  - r-vtree
+  - r-ggpubr
+  - r-sfsmisc
+  - r-stringr
+  - r-ggtext
+  - r-ggrastr
+  - r-rann
+  - r-reshape2
+  - r-ashr
+  - r-matrixstats
+  - r-ggdendro
+  - r-patchwork
+  - bioconductor-mast
+  - bioconductor-fgsea
+  - bioconductor-deseq2
+  - bioconductor-edger
+  - bioconductor-limma
+  - bioconductor-biocparallel
+  - bioconductor-gseabase
+  - bioconductor-complexheatmap
+
+  # Notebook-specific Python packages installed via pip for better compatibility
+  - pip:
+      - anndata
+      - scanpy
+      - scvi-tools
+      - leidenalg
+      - pynndescent
+      - umap-learn
+      - ray[tune]
+
+  # Packages that are often installed after env creation if conda does not provide them:
+  # - SeuratWrappers
+  # - sccomp
+  # - trelliscopejs
+  # Runtime fallback is still CPU when torch.cuda.is_available() is false.

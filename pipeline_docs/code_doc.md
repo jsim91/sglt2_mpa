@@ -7,6 +7,15 @@ This document describes the canonical execution sequence for scripts in `primary
 - Workflow entrypoint: run `primary_script/1_pre_detect_doublets.ipynb` first.
 - Primary sequence (single pass): `1` -> `2` -> `3` -> `4` -> `5` -> `6` -> `7` -> `8` -> `9` -> `10` -> `11` -> `12` -> `13` -> `14` -> `15`.
 
+## Environment Setup
+
+- Recommended setup command from the repository root:
+  - `bash tools/setup_conda_env.sh`
+- This creates or updates the `sglt2_mpa` conda environment and then installs the extra R packages handled outside the base conda solve.
+- Manual core environment creation is also possible:
+  - `conda env create -f environment.yml`
+- On Windows, use WSL or Git Bash for the setup script. Plain PowerShell should use the manual conda command instead.
+
 ## Before Running
 
 - External 10x Cell Ranger H5 matrices are required and are not packaged in this repo.
