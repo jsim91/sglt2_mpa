@@ -300,7 +300,7 @@ for(i in 1:length(mast_res)) {
                                        category_column = cat_col,
                                        test_categories = test_cats,
                                        test_condition = "all",
-                                       condition_column = "condition_custom", # pseudo condition to prevent errors and customize output list name(s); cells were not perturbed, therefore going with 'media'
+                                       condition_column = "condition_custom", 
                                        pid_column = "study_id",
                                        pseudobulk_test_mode = "cluster_by_category",
                                        filter_genes = "outer"), silent = TRUE)
@@ -328,7 +328,7 @@ seu_mast_plt <- seurat_dge(seurat_object = seu_test_plt,
                            category_column = "cell_type",
                            test_categories = c("cMono","Platelet"),
                            test_condition = "all",
-                           condition_column = "condition_custom", # pseudo condition to prevent errors and customize output list name(s); cells were not perturbed, therefore going with 'media'
+                           condition_column = "condition_custom", 
                            pid_column = "study_id",
                            pseudobulk_test_mode = "cluster_by_category",
                            filter_genes = "outer")
@@ -358,7 +358,7 @@ seu_mast_sd1 <- seurat_dge(seurat_object = seu_test_sd1,
                                      category_column = "cell_type",
                                      test_categories = c("cMono","MPA"),
                                      test_condition = "all",
-                                     condition_column = "condition_custom", # pseudo condition to prevent errors and customize output list name(s); cells were not perturbed, therefore going with 'media'
+                                     condition_column = "condition_custom", 
                                      pid_column = "study_id",
                                      pseudobulk_test_mode = "cluster_by_category",
                                      filter_genes = "outer", 
