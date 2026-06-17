@@ -1,7 +1,7 @@
 Pipeline script documentation: [pipeline_docs/code_doc.md](pipeline_docs/code_doc.md)
 
 #### Data Availability Statement<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Raw sequencing data have been deposited in the NCBI Sequence Read Archive under BioProject accession PRJNA1460384. The data are currently private during review; reviewer access is available through the private SRA reviewer link provided with the revised manuscript. Analytic code is available in this GitHub repository. Additional study materials are available upon reasonable request.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Raw sequencing data have been deposited in the NCBI Sequence Read Archive under BioProject accession PRJNA1460384. Analytic code is available in this GitHub repository. Additional study materials are available upon reasonable request.<br>
 
 #### Clinical Study Design<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The objective of this pilot study was to evaluate the immune effects of empagliflozin in humans, including in blood.<br>
